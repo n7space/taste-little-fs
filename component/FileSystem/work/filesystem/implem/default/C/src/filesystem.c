@@ -7,8 +7,14 @@
     !! the procedures corresponding to the provided interfaces in this  !!
     !! file. The up-to-date signatures can be found in the header file. !!
 */
+#define LFS_NO_MALLOC
+
 #include "filesystem.h"
 #include "lfs.h"
+#include "string.h"
+#include "stdint.h"
+
+#define MAXIMUM_OBJECT_THAT_CAN_BE_REPORTED 64
 
 int block_device_read(const struct lfs_config *c, lfs_block_t block,
 			lfs_off_t off, void *buffer, lfs_size_t size);
@@ -21,9 +27,8 @@ int block_device_erase(const struct lfs_config *c, lfs_block_t block);
 int block_device_sync(const struct lfs_config *c);
 
 lfs_t lfs;
-lfs_file_t file;
 
-const struct lfs_config cfg = {
+struct lfs_config cfg = {
     .read  = block_device_read,
     .prog  = block_device_prog,
     .erase = block_device_erase,
@@ -41,9 +46,11 @@ const struct lfs_config cfg = {
 
 void filesystem_startup(void)
 {
-   // Write your initialisation code
-   // You may call sporadic required interfaces and start timers
-   // puts ("[FileSystem] Startup");
+	int err = lfs_mount(&lfs, &cfg);
+	if (err) {
+		lfs_format(&lfs, &cfg);
+		lfs_mount(&lfs, &cfg);
+	}
 }
 
 void filesystem_PI_file_handling_create_file
@@ -53,7 +60,31 @@ void filesystem_PI_file_handling_create_file
        asn1SccAPP_MARKER_BOOLEAN *OUT_result)
 
 {
-   // Write your code here
+	lfs_file_t file;
+	uint8_t buffer[cfg.cache_size];
+	memset(buffer, 0, cfg.cache_size);
+
+	struct lfs_attr file_attr = {
+		.type = 0,
+		.buffer = IN_attributes->field_data.arr,
+		.size = IN_attributes->field_data.nCount
+	};
+
+	struct lfs_file_config file_config = {
+		.buffer = buffer,
+		.attrs = &file_attr,
+		.attr_count = 1
+	};
+
+	int return_code = lfs_file_opencfg(&lfs, &file, IN_object_path->field_data, LFS_O_CREAT, &file_config);
+	if(return_code < 0){
+		lfs_file_close(&lfs, &file);
+		*OUT_result = false;
+		return;
+	}
+
+	return_code = lfs_file_close(&lfs, &file);
+	*OUT_result = return_code < 0;
 }
 
 
@@ -62,7 +93,8 @@ void filesystem_PI_file_handling_delete_file
        asn1SccAPP_MARKER_BOOLEAN *OUT_result)
 
 {
-   // Write your code here
+    int return_code = lfs_remove(&lfs, IN_object_path->file_name.field_data);
+	*OUT_result = return_code < 0;
 }
 
 
@@ -74,7 +106,50 @@ void filesystem_PI_read_object_memory
        asn1SccAPP_MARKER_BOOLEAN *OUT_result)
 
 {
-   // Write your code here
+	if(IN_memory_base->kind != APP_MARKER_MEMORY_BASE_fs_memory_PRESENT){
+		*OUT_result = false;
+		return;
+	}
+
+	lfs_file_t file;
+	int offset = *IN_offset;
+	int length = *IN_length;
+
+	uint8_t buffer[cfg.cache_size];
+	memset(buffer, 0, cfg.cache_size);
+
+	struct lfs_attr file_attrs[8];
+
+	struct lfs_file_config file_config = {
+		.buffer = buffer,
+		.attrs = file_attrs,
+		.attr_count = 0
+	};
+
+   	int return_code = lfs_file_opencfg(&lfs, &file, IN_memory_base->u.fs_memory.field_data, LFS_O_RDWR | LFS_O_CREAT, &file_config);
+	if(return_code < 0){
+		*OUT_result = false;
+		return;
+	}
+
+	if(offset != lfs_file_seek(&lfs, &file, offset, LFS_SEEK_SET)){
+		*OUT_result = false;
+		return;
+	}
+
+    if(length != lfs_file_read(&lfs, &file, OUT_content->field_data.arr, length)){
+		*OUT_result = false;
+		return;
+	}
+	OUT_content->field_data.nCount = length;
+
+	return_code = lfs_file_close(&lfs, &file);
+	if(return_code < 0){
+		*OUT_result = false;
+		return;
+	}
+
+	*OUT_result = true;
 }
 
 
@@ -82,7 +157,30 @@ void filesystem_PI_report_content_of_repository_request
       (const asn1SccAPP_MARKER_REPOSITORY_PATH *IN_repository_path)
 
 {
-   // Write your code here
+	lfs_dir_t dir;
+	struct lfs_info info;
+	asn1SccALPHA_REPOSITORY_OBJECTS repo_objects;
+	repo_objects.field_data.nCount = 0;
+
+    int return_code = lfs_dir_open(&lfs, &dir, IN_repository_path->field_data);
+	if(return_code < 0){
+		return;
+	}
+
+	while(lfs_dir_read(&lfs, &dir, &info) > 0 && repo_objects.field_data.nCount < MAXIMUM_OBJECT_THAT_CAN_BE_REPORTED){
+		if(info.type == LFS_TYPE_DIR){
+			repo_objects.field_data.arr[repo_objects.field_data.nCount].object_type = asn1SccALPHA_OBJECT_TYPE_directory;
+		}
+		else if (info.type == LFS_TYPE_REG){
+			repo_objects.field_data.arr[repo_objects.field_data.nCount].object_type = asn1SccALPHA_OBJECT_TYPE_file;
+		}
+		strncpy(repo_objects.field_data.arr[repo_objects.field_data.nCount].object_name.field_data, info.name, asn1SccALPHA_OBJECT_NAME_REQUIRED_BYTES_FOR_ENCODING + 1);
+		repo_objects.field_data.arr[repo_objects.field_data.nCount].object_name.field_data[asn1SccALPHA_OBJECT_NAME_REQUIRED_BYTES_FOR_ENCODING] = '\0';
+		repo_objects.field_data.nCount++;
+	}
+
+	lfs_dir_close(&lfs, &dir);
+	filesystem_RI_report_content_of_repository_request_respond(IN_repository_path, &repo_objects);
 }
 
 
@@ -93,7 +191,49 @@ void filesystem_PI_write_object_memory
        asn1SccAPP_MARKER_BOOLEAN *OUT_result)
 
 {
-   // Write your code here
+   	if(IN_memory_base->kind != APP_MARKER_MEMORY_BASE_fs_memory_PRESENT){
+		*OUT_result = false;
+		return;
+	}
+
+	lfs_file_t file;
+	int offset = *IN_offset;
+	int length = IN_content->field_data.nCount;
+
+	uint8_t buffer[cfg.cache_size];
+	memset(buffer, 0, cfg.cache_size);
+
+	struct lfs_attr file_attrs[8];
+
+	struct lfs_file_config file_config = {
+		.buffer = buffer,
+		.attrs = file_attrs,
+		.attr_count = 0
+	};
+
+   	int return_code = lfs_file_opencfg(&lfs, &file, IN_memory_base->u.fs_memory.field_data, LFS_O_RDWR | LFS_O_CREAT, &file_config);
+	if(return_code < 0){
+		*OUT_result = false;
+		return;
+	}
+
+	if(offset != lfs_file_seek(&lfs, &file, offset, LFS_SEEK_SET)){
+		*OUT_result = false;
+		return;
+	}
+
+    if(length != lfs_file_write(&lfs, &file, IN_content->field_data.arr, length)){
+		*OUT_result = false;
+		return;
+	}
+
+	return_code = lfs_file_close(&lfs, &file);
+	if(return_code < 0){
+		*OUT_result = false;
+		return;
+	}
+
+	*OUT_result = true;
 }
 
 int block_device_read(const struct lfs_config *c, lfs_block_t block,
@@ -105,7 +245,12 @@ int block_device_read(const struct lfs_config *c, lfs_block_t block,
 	const asn1SccMEMORY_SIZE data_size = size;
 	asn1SccT_Int32 return_code;
 
+	memset(data.arr, 0, asn1SccMEMORY_DATA_REQUIRED_BYTES_FOR_ENCODING - 1);
+	data.nCount = size;
+
 	filesystem_RI_memory_read(&block_index, &block_offset, &data, &data_size, &return_code);
+
+	memcpy(buffer, data.arr, size);
 
 	return return_code;
 }
@@ -113,17 +258,37 @@ int block_device_read(const struct lfs_config *c, lfs_block_t block,
 int block_device_prog(const struct lfs_config *c, lfs_block_t block,
 		      lfs_off_t off, const void *buffer, lfs_size_t size)
 {
+	const asn1SccMEMORY_BLOCK_INDEX block_index = block;
+	const asn1SccMEMORY_OFFSET block_offset = off;
+	asn1SccMEMORY_DATA data;
+	const asn1SccMEMORY_SIZE data_size = size;
+	asn1SccT_Int32 return_code;
 
+	memcpy(data.arr, buffer, size);
+	data.nCount = size;
+
+	filesystem_RI_memory_program(&block_index, &block_offset, &data, &data_size, &return_code);
+
+	return return_code;
 }
 
 int block_device_erase(const struct lfs_config *c, lfs_block_t block)
 {
+	const asn1SccMEMORY_BLOCK_INDEX block_index = block;
+	asn1SccT_Int32 return_code;
 
+	filesystem_RI_memory_erase(&block_index, &return_code);
+
+	return return_code;
 }
 
 int block_device_sync(const struct lfs_config *c)
 {
+	asn1SccT_Int32 return_code;
 
+	filesystem_RI_memory_sync(&return_code);
+
+	return return_code;
 }
 
 
