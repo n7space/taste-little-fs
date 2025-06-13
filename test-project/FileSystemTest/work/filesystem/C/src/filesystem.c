@@ -8,6 +8,7 @@
     !! file. The up-to-date signatures can be found in the header file. !!
 */
 #define LFS_NO_MALLOC
+#define LFS_YES_TRACE
 
 #include "filesystem.h"
 #include "lfs.h"
@@ -48,8 +49,14 @@ void filesystem_startup(void)
 {
 	int err = lfs_mount(&lfs, &cfg);
 	if (err) {
-		lfs_format(&lfs, &cfg);
-		lfs_mount(&lfs, &cfg);
+		if (0 < lfs_format(&lfs, &cfg)){
+			printf("[FileSystem] format error\n");
+			exit(EXIT_FAILURE);
+		}
+		if (0 < lfs_mount(&lfs, &cfg)){
+			printf("[FileSystem] mount error\n");
+			exit(EXIT_FAILURE);
+		}
 	}
 }
 
@@ -81,15 +88,14 @@ void filesystem_PI_file_handling_create_file
 		.attr_count = 1
 	};
 
-	int return_code = lfs_file_opencfg(&lfs, &file, IN_object_path->field_data, LFS_O_CREAT, &file_config);
+	int return_code = lfs_file_opencfg(&lfs, &file, IN_object_path->field_data, LFS_O_RDWR | LFS_O_CREAT, &file_config);
 	if(return_code < 0){
-		lfs_file_close(&lfs, &file);
 		*OUT_result = false;
 		return;
 	}
 
 	return_code = lfs_file_close(&lfs, &file);
-	*OUT_result = return_code < 0;
+	*OUT_result = return_code == 0;
 }
 
 
@@ -99,7 +105,7 @@ void filesystem_PI_file_handling_delete_file
 
 {
 	int return_code = lfs_remove(&lfs, IN_object_path->file_name.field_data);
-	*OUT_result = return_code < 0;
+	*OUT_result = return_code == 0;
 }
 
 

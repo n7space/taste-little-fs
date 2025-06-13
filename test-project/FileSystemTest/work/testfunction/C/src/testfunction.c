@@ -8,26 +8,42 @@
     !! file. The up-to-date signatures can be found in the header file. !!
 */
 #include "testfunction.h"
-//#include <stdio.h>
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 void testfunction_startup(void)
 {
-   // Write your initialisation code
-   // You may call sporadic required interfaces and start timers
-   // puts ("[TestFunction] Startup");
+}
+
+void testfunction_PI_trigger(void)
+{
+	asn1SccGAMMA_REPOSITORY_PATH repo_path;
+	strcpy(repo_path.field_data, "test_re");
+
+	asn1SccGAMMA_MAXIMUM_SIZE maximum_size = 0;
+
+	asn1SccGAMMA_ADDITIONAL_FILE_ATTRIBUTE file_attr;
+	file_attr.field_data.nCount = 1;
+	file_attr.field_data.arr[0] = 0xab;
+
+	asn1SccGAMMA_BOOLEAN result;
+
+	testfunction_RI_file_handling_create_file(&repo_path, &maximum_size, &file_attr, &result);
+
+	if(!result){
+		printf("FAILURE!\n");
+		exit(EXIT_FAILURE);
+	}
+
+	printf("TEST PASSED\n");
+	exit(EXIT_SUCCESS);
 }
 
 void testfunction_PI_report_content_of_repository_request_respond
       (const asn1SccGAMMA_REPOSITORY_PATH *IN_repository_path,
        asn1SccALPHA_REPOSITORY_OBJECTS *OUT_files)
 
-{
-   // Write your code here
-}
-
-
-void testfunction_PI_trigger(void)
 {
    // Write your code here
 }
