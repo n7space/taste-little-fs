@@ -18,8 +18,8 @@ void testfunction_startup(void)
 
 void testfunction_PI_trigger(void)
 {
-	asn1SccGAMMA_REPOSITORY_PATH repo_path;
-	strcpy(repo_path.field_data, "test_re");
+	asn1SccGAMMA_REPOSITORY_PATH file_path;
+	strcpy(file_path.field_data, "test_re");
 
 	asn1SccGAMMA_MAXIMUM_SIZE maximum_size = 0;
 
@@ -29,10 +29,10 @@ void testfunction_PI_trigger(void)
 
 	asn1SccGAMMA_BOOLEAN result;
 
-	testfunction_RI_file_handling_create_file(&repo_path, &maximum_size, &file_attr, &result);
+	testfunction_RI_file_handling_create_file(&file_path, &maximum_size, &file_attr, &result);
 
 	if(!result){
-		printf("FAILURE!\n");
+		printf("TEST FAILURE!\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -52,7 +52,7 @@ void testfunction_PI_trigger(void)
 	testfunction_RI_write_object_memory(&memory_base, &memory_offset, &memory_data, &result);
 
 	if(!result){
-		printf("FAILURE!\n");
+		printf("TEST FAILURE!\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -66,7 +66,22 @@ void testfunction_PI_trigger(void)
 	   				memory_data.field_data.arr[1] == 0x34 &&
 	   				memory_data.field_data.arr[2] == 0x56 &&
 	   				memory_data.field_data.arr[3] == 0x78)){
-		printf("FAILURE!\n");
+		printf("TEST FAILURE!\n");
+		exit(EXIT_FAILURE);
+	}
+
+	asn1SccGAMMA_REPOSITORY_PATH dir_path;
+	strcpy(dir_path.field_data, "/");
+
+	testfunction_RI_report_content_of_repository_request(&dir_path);
+
+	asn1SccGAMMA_FILE_PATH file_path_to_delete;
+	strcpy(file_path_to_delete.file_name.field_data, "test_re");
+
+	testfunction_RI_file_handling_delete_file(&file_path_to_delete, &result);
+
+	if(!result){
+		printf("TEST FAILURE!\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -79,7 +94,16 @@ void testfunction_PI_report_content_of_repository_request_respond
        asn1SccALPHA_REPOSITORY_OBJECTS *OUT_files)
 
 {
-   // Write your code here
+	if(!(OUT_files->field_data.nCount == 3 && 
+	    OUT_files->field_data.arr[0].object_type == asn1SccALPHA_OBJECT_TYPE_directory &&
+	    strcmp(OUT_files->field_data.arr[0].object_name.field_data, ".") == 0 &&
+	    OUT_files->field_data.arr[1].object_type == asn1SccALPHA_OBJECT_TYPE_directory &&
+	    strcmp(OUT_files->field_data.arr[1].object_name.field_data, "..") == 0 &&
+	    OUT_files->field_data.arr[2].object_type == asn1SccALPHA_OBJECT_TYPE_file &&
+	    strcmp(OUT_files->field_data.arr[2].object_name.field_data, "test_re") == 0)){
+		printf("TEST FAILURE!\n");
+		exit(EXIT_FAILURE);
+	}
 }
 
 

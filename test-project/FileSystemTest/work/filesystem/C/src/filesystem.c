@@ -167,6 +167,7 @@ void filesystem_PI_report_content_of_repository_request
 
 	int return_code = lfs_dir_open(&lfs, &dir, IN_repository_path->field_data);
 	if(return_code < 0){
+		printf("[FileSystem] could not open a dir\n");
 		return;
 	}
 
