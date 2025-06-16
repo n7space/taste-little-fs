@@ -9,8 +9,8 @@
 */
 #include "memoryaccess.h"
 #include <stdint.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 #define MEMORY_SIZE (100 * 1024)
 #define READ_SIZE 16
@@ -20,90 +20,98 @@
 
 static uint8_t memory[MEMORY_SIZE];
 
-static bool is_read_or_write_valid(const asn1SccMEMORY_BLOCK_INDEX *IN_block_index,
-				   const asn1SccMEMORY_OFFSET *IN_block_offset,
-				   const asn1SccMEMORY_SIZE *IN_data_size)
+static bool
+is_read_or_write_valid(const asn1SccMEMORY_BLOCK_INDEX *IN_block_index,
+		       const asn1SccMEMORY_OFFSET *IN_block_offset,
+		       const asn1SccMEMORY_SIZE *IN_data_size)
 {
-	if(*IN_block_index >= ERASE_COUNT){
-		printf("[MEMORY ACCESS] block index is not smaller than ERASE_COUNT\n");
+	if (*IN_block_index >= ERASE_COUNT) {
+		printf("[MEMORY ACCESS] block index is not smaller than "
+		       "ERASE_COUNT\n");
 		return false;
 	}
 
-	if(*IN_block_offset % READ_SIZE != 0){
-		printf("[MEMORY ACCESS] block offset is not multiplicity of READ_SIZE\n");
+	if (*IN_block_offset % READ_SIZE != 0) {
+		printf("[MEMORY ACCESS] block offset is not multiplicity of "
+		       "READ_SIZE\n");
 		return false;
 	}
 
-	if(*IN_data_size % READ_SIZE != 0){
-		printf("[MEMORY ACCESS] data size is not multiplicity of READ_SIZE\n");
+	if (*IN_data_size % READ_SIZE != 0) {
+		printf("[MEMORY ACCESS] data size is not multiplicity of "
+		       "READ_SIZE\n");
 		return false;
 	}
 
-	if(*IN_data_size + *IN_block_offset > ERASE_SIZE){
-		printf("[MEMORY ACCESS] data size plus block offset is larger than ERASE_SIZE\n");
+	if (*IN_data_size + *IN_block_offset > ERASE_SIZE) {
+		printf("[MEMORY ACCESS] data size plus block offset is larger "
+		       "than ERASE_SIZE\n");
 		return false;
 	}
 
-	if(*IN_block_index * ERASE_SIZE + *IN_block_offset > MEMORY_SIZE){
-		printf("[MEMORY ACCESS] read or write access reaches beyond MEMORY_SIZE\n");
+	if (*IN_block_index * ERASE_SIZE + *IN_block_offset > MEMORY_SIZE) {
+		printf("[MEMORY ACCESS] read or write access reaches beyond "
+		       "MEMORY_SIZE\n");
 		return false;
 	}
 
-	if(*IN_data_size > asn1SccMEMORY_DATA_REQUIRED_BYTES_FOR_ACN_ENCODING - 1){
-		printf("[MEMORY ACCESS] data size excedes MEMORY_DATA buffer size\n");
+	if (*IN_data_size >
+	    asn1SccMEMORY_DATA_REQUIRED_BYTES_FOR_ACN_ENCODING - 1) {
+		printf("[MEMORY ACCESS] data size excedes MEMORY_DATA buffer "
+		       "size\n");
 		return false;
 	}
 
 	return true;
 }
 
-void memoryaccess_startup(void)
-{
-	memset(memory, 0, MEMORY_SIZE);
-}
+void memoryaccess_startup(void) { memset(memory, 0, MEMORY_SIZE); }
 
-void memoryaccess_PI_memory_read
-    (const asn1SccMEMORY_BLOCK_INDEX *IN_block_index,
-     const asn1SccMEMORY_OFFSET *IN_block_offset,
-     asn1SccMEMORY_DATA *OUT_buffer,
-     const asn1SccMEMORY_SIZE *IN_data_size,
-     asn1SccT_Int32 *OUT_return_code)
+void memoryaccess_PI_memory_read(
+    const asn1SccMEMORY_BLOCK_INDEX *IN_block_index,
+    const asn1SccMEMORY_OFFSET *IN_block_offset, asn1SccMEMORY_DATA *OUT_buffer,
+    const asn1SccMEMORY_SIZE *IN_data_size, asn1SccT_Int32 *OUT_return_code)
 
 {
-	if(!is_read_or_write_valid(IN_block_index, IN_block_offset, IN_data_size)){
+	if (!is_read_or_write_valid(IN_block_index, IN_block_offset,
+				    IN_data_size)) {
 		*OUT_return_code = -1;
 		return;
 	}
 
 	OUT_buffer->nCount = *IN_data_size;
-	memcpy(OUT_buffer->arr, &memory[*IN_block_index * ERASE_SIZE + *IN_block_offset], *IN_data_size);
+	memcpy(OUT_buffer->arr,
+	       &memory[*IN_block_index * ERASE_SIZE + *IN_block_offset],
+	       *IN_data_size);
 	*OUT_return_code = 0;
 }
 
-void memoryaccess_PI_memory_program
-    (const asn1SccMEMORY_BLOCK_INDEX *IN_block_index,
-     const asn1SccMEMORY_OFFSET *IN_block_offset,
-     const asn1SccMEMORY_DATA *IN_buffer,
-     const asn1SccMEMORY_SIZE *IN_data_size,
-     asn1SccT_Int32 *OUT_return_code)
+void memoryaccess_PI_memory_program(
+    const asn1SccMEMORY_BLOCK_INDEX *IN_block_index,
+    const asn1SccMEMORY_OFFSET *IN_block_offset,
+    const asn1SccMEMORY_DATA *IN_buffer, const asn1SccMEMORY_SIZE *IN_data_size,
+    asn1SccT_Int32 *OUT_return_code)
 
 {
-	if(!is_read_or_write_valid(IN_block_index, IN_block_offset, IN_data_size)){
+	if (!is_read_or_write_valid(IN_block_index, IN_block_offset,
+				    IN_data_size)) {
 		*OUT_return_code = -1;
 		return;
 	}
 
-	memcpy(&memory[*IN_block_index * ERASE_SIZE + *IN_block_offset], IN_buffer->arr, *IN_data_size);
+	memcpy(&memory[*IN_block_index * ERASE_SIZE + *IN_block_offset],
+	       IN_buffer->arr, *IN_data_size);
 	*OUT_return_code = 0;
 }
 
-void memoryaccess_PI_memory_erase
-      (const asn1SccMEMORY_BLOCK_INDEX *IN_block_index,
-       asn1SccT_Int32 *OUT_return_code)
+void memoryaccess_PI_memory_erase(
+    const asn1SccMEMORY_BLOCK_INDEX *IN_block_index,
+    asn1SccT_Int32 *OUT_return_code)
 
 {
-	if(*IN_block_index >= ERASE_COUNT){
-		printf("[MEMORY ACCESS] block index is not smaller than ERASE_COUNT");
+	if (*IN_block_index >= ERASE_COUNT) {
+		printf("[MEMORY ACCESS] block index is not smaller than "
+		       "ERASE_COUNT");
 		*OUT_return_code = -1;
 		return;
 	}
@@ -112,12 +120,9 @@ void memoryaccess_PI_memory_erase
 	*OUT_return_code = 0;
 }
 
-void memoryaccess_PI_memory_sync
-      (asn1SccT_Int32 *OUT_return_code)
+void memoryaccess_PI_memory_sync(asn1SccT_Int32 *OUT_return_code)
 
 {
 	// noop
 	*OUT_return_code = 0;
 }
-
-
