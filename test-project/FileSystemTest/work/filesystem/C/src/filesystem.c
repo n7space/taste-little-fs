@@ -47,22 +47,14 @@ struct lfs_config cfg = {
 
 void filesystem_startup(void)
 {
-	int err = lfs_mount(&lfs, &cfg);
-	if (err) {
-		if (0 < lfs_format(&lfs, &cfg)){
-			printf("[FileSystem] format error\n");
-			exit(EXIT_FAILURE);
-		}
-		if (0 < lfs_mount(&lfs, &cfg)){
-			printf("[FileSystem] mount error\n");
-			exit(EXIT_FAILURE);
-		}
+	if (0 < lfs_format(&lfs, &cfg)){
+		printf("[FileSystem] format error\n");
+		exit(EXIT_FAILURE);
 	}
-}
-
-void filesystem_PI_trigger()
-{
-
+	if (0 < lfs_mount(&lfs, &cfg)){
+		printf("[FileSystem] mount error\n");
+		exit(EXIT_FAILURE);
+	}
 }
 
 void filesystem_PI_file_handling_create_file

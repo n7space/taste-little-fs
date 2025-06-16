@@ -36,6 +36,40 @@ void testfunction_PI_trigger(void)
 		exit(EXIT_FAILURE);
 	}
 
+	asn1SccGAMMA_MEMORY_BASE memory_base;
+	memory_base.kind = GAMMA_MEMORY_BASE_fs_memory_PRESENT;
+	strcpy(memory_base.u.fs_memory.field_data, "test_re");
+
+	asn1SccGAMMA_MEMORY_OFFSET memory_offset = 8;
+
+	asn1SccGAMMA_MEMORY_DATA memory_data;
+	memory_data.field_data.nCount = 4;
+	memory_data.field_data.arr[0] = 0x12;
+	memory_data.field_data.arr[1] = 0x34;
+	memory_data.field_data.arr[2] = 0x56;
+	memory_data.field_data.arr[3] = 0x78;
+
+	testfunction_RI_write_object_memory(&memory_base, &memory_offset, &memory_data, &result);
+
+	if(!result){
+		printf("FAILURE!\n");
+		exit(EXIT_FAILURE);
+	}
+
+	asn1SccGAMMA_MEMORY_OFFSET memory_size = 4;
+	asn1SccGAMMA_MEMORY_DATA out_memory_data;
+
+	testfunction_RI_read_object_memory(&memory_base, &memory_offset, &memory_size, &out_memory_data, &result);
+
+	if(!result || !(memory_data.field_data.nCount == 4 &&
+	   				memory_data.field_data.arr[0] == 0x12 &&
+	   				memory_data.field_data.arr[1] == 0x34 &&
+	   				memory_data.field_data.arr[2] == 0x56 &&
+	   				memory_data.field_data.arr[3] == 0x78)){
+		printf("FAILURE!\n");
+		exit(EXIT_FAILURE);
+	}
+
 	printf("TEST PASSED\n");
 	exit(EXIT_SUCCESS);
 }
