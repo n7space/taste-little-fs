@@ -117,17 +117,12 @@ void filesystem_PI_file_handling_delete_file(
 	*OUT_result = return_code == 0;
 }
 
-void filesystem_PI_read_object_memory(
-    const asn1SccGAMMA_MEMORY_BASE *IN_memory_base,
+void filesystem_PI_read_file(
+    const asn1SccGAMMA_REPOSITORY_PATH *IN_file_path,
     const asn1SccGAMMA_MEMORY_OFFSET *IN_offset,
     const asn1SccGAMMA_MEMORY_OFFSET *IN_length,
     asn1SccGAMMA_MEMORY_DATA *OUT_content, asn1SccGAMMA_BOOLEAN *OUT_result)
 {
-	if (IN_memory_base->kind != GAMMA_MEMORY_BASE_fs_memory_PRESENT) {
-		*OUT_result = false;
-		return;
-	}
-
 	lfs_file_t file;
 	int offset = *IN_offset;
 	int length = *IN_length;
@@ -140,7 +135,7 @@ void filesystem_PI_read_object_memory(
 	    .buffer = buffer, .attrs = &file_attrs, .attr_count = 0};
 
 	int return_code = lfs_file_opencfg(
-	    &lfs, &file, IN_memory_base->u.fs_memory.field_data,
+	    &lfs, &file, IN_file_path->field_data,
 	    LFS_O_RDWR | LFS_O_CREAT, &file_config);
 	if (return_code < 0) {
 		*OUT_result = false;
@@ -213,18 +208,13 @@ void filesystem_PI_report_content_of_repository_request(
 	    IN_repository_path, &repo_objects);
 }
 
-void filesystem_PI_write_object_memory(
-    const asn1SccGAMMA_MEMORY_BASE *IN_memory_base,
+void filesystem_PI_write_to_file(
+    const asn1SccGAMMA_REPOSITORY_PATH *IN_file_path,
     const asn1SccGAMMA_MEMORY_OFFSET *IN_offset,
     const asn1SccGAMMA_MEMORY_DATA *IN_content,
     asn1SccGAMMA_BOOLEAN *OUT_result)
 
 {
-	if (IN_memory_base->kind != GAMMA_MEMORY_BASE_fs_memory_PRESENT) {
-		*OUT_result = false;
-		return;
-	}
-
 	lfs_file_t file;
 	int offset = *IN_offset;
 	int length = IN_content->field_data.nCount;
@@ -237,7 +227,7 @@ void filesystem_PI_write_object_memory(
 	    .buffer = buffer, .attrs = &file_attrs, .attr_count = 0};
 
 	int return_code = lfs_file_opencfg(
-	    &lfs, &file, IN_memory_base->u.fs_memory.field_data,
+	    &lfs, &file, IN_file_path->field_data,
 	    LFS_O_RDWR | LFS_O_CREAT, &file_config);
 	if (return_code < 0) {
 		*OUT_result = false;

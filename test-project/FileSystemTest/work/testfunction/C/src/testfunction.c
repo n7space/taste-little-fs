@@ -33,9 +33,8 @@ static void test_file_create()
 
 static void test_file_write()
 {
-	asn1SccGAMMA_MEMORY_BASE memory_base;
-	memory_base.kind = GAMMA_MEMORY_BASE_fs_memory_PRESENT;
-	strcpy(memory_base.u.fs_memory.field_data, "test_re");
+	asn1SccGAMMA_REPOSITORY_PATH file_path;
+	strcpy(file_path.field_data, "test_re");
 	asn1SccGAMMA_MEMORY_OFFSET memory_offset = 8;
 	asn1SccGAMMA_MEMORY_DATA memory_data;
 	memory_data.field_data.nCount = 4;
@@ -46,7 +45,7 @@ static void test_file_write()
 
 	asn1SccGAMMA_BOOLEAN result;
 
-	testfunction_RI_write_object_memory(&memory_base, &memory_offset,
+	testfunction_RI_write_to_file(&file_path, &memory_offset,
 					    &memory_data, &result);
 
 	if (!result) {
@@ -57,15 +56,14 @@ static void test_file_write()
 
 static void test_file_read()
 {
-	asn1SccGAMMA_MEMORY_BASE memory_base;
-	memory_base.kind = GAMMA_MEMORY_BASE_fs_memory_PRESENT;
-	strcpy(memory_base.u.fs_memory.field_data, "test_re");
+	asn1SccGAMMA_REPOSITORY_PATH file_path;
+	strcpy(file_path.field_data, "test_re");
 	asn1SccGAMMA_MEMORY_OFFSET memory_offset = 8;
 	asn1SccGAMMA_MEMORY_OFFSET memory_size = 4;
 	asn1SccGAMMA_MEMORY_DATA out_memory_data;
 	asn1SccGAMMA_BOOLEAN result;
 
-	testfunction_RI_read_object_memory(&memory_base, &memory_offset,
+	testfunction_RI_read_file(&file_path, &memory_offset,
 					   &memory_size, &out_memory_data,
 					   &result);
 

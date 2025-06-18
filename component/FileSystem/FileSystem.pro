@@ -10,8 +10,8 @@ DISTFILES += work/binaries/coverage/index.html
 DISTFILES += work/binaries/filters
 DISTFILES += work/system.asn
 
-DISTFILES += ./test-little-fs.acn
-DISTFILES += ./test-little-fs.asn
+DISTFILES += ./filesystem.asn
+DISTFILES += ./filesystem.acn
 include(work/taste.pro)
 message($$DISTFILES)
 

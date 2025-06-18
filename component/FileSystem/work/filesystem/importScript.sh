@@ -1,12 +1,16 @@
 #!/bin/bash
 
-user_input=$(zenity --entry --title="Enter the app name for sed" --text="Enter the app name for sed in sources")
+filepath="/tmp/app_marker.tmp"
 
-if [ $? -eq 0 ]; then
+if [[ -f "$filepath" ]]; then
+    user_input=$(<"$filepath")
     echo "You entered: $user_input"
+    user_input="${user_input//-/_}"
     sed -i "s/APP_MARKER/$user_input/" C/src/filesystem.c
-else
-    echo "User canceled the input."
+    user_input="${user_input//_/-}"
+    sed -i "s/APP-MARKER/$user_input/" ../../filesystem.asn
+    sed -i "s/APP-MARKER/$user_input/" ../../filesystem.acn
+    rm -f "$filepath"
 fi
 
 exit 0

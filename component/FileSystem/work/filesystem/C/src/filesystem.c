@@ -13,10 +13,17 @@
 #include "filesystem.h"
 #include "lfs.h"
 #include "stdint.h"
-#include "string.h"
+#include <string.h>
 
-#define MAXIMUM_OBJECT_THAT_CAN_BE_REPORTED 64
-// wyliczyć z dataview bits
+#ifdef unix
+#define FS_PRINT(A) printf(A);
+#else
+#define FS_PRINT(A)
+#endif
+
+#define MAXIMUM_OBJECT_THAT_CAN_BE_REPORTED                                    \
+	(asn1SccAPP_MARKER_REPOSITORY_OBJECTS_REQUIRED_BITS_FOR_ACN_ENCODING /      \
+	 asn1SccAPP_MARKER_REPOSITORY_OBJECT_REQUIRED_BITS_FOR_ACN_ENCODING)
 
 int block_device_read(const struct lfs_config *c, lfs_block_t block,
 		      lfs_off_t off, void *buffer, lfs_size_t size);
@@ -35,33 +42,46 @@ struct lfs_config cfg = {
     .prog = block_device_prog,
     .erase = block_device_erase,
     .sync = block_device_sync,
-
-    .read_size = 16,
-    .prog_size = 16,
-    .block_size = 4096,
-    .block_count = 128,
-    .block_cycles = 500,
-    .cache_size = 16,
-    .lookahead_size = 16,
 };
 
-void filesystem_startup(void)
+void filesystem_startup(void) {}
+
+void filesystem_PI_init(const asn1SccAPP_MARKER_INTEGER *IN_read_size,
+			const asn1SccAPP_MARKER_INTEGER *IN_prog_size,
+			const asn1SccAPP_MARKER_INTEGER *IN_block_size,
+			const asn1SccAPP_MARKER_INTEGER *IN_block_count,
+			const asn1SccAPP_MARKER_INTEGER *IN_block_cycles,
+			const asn1SccAPP_MARKER_INTEGER *IN_cashe_size,
+			const asn1SccAPP_MARKER_INTEGER *IN_lookahead_size,
+			asn1SccAPP_MARKER_BOOLEAN *OUT_result)
 {
+	cfg.read_size = *IN_read_size;
+	cfg.prog_size = *IN_prog_size;
+	cfg.block_size = *IN_block_size;
+	cfg.block_count = *IN_block_count;
+	cfg.block_cycles = *IN_block_cycles;
+	cfg.cache_size = *IN_cashe_size;
+	cfg.lookahead_size = *IN_lookahead_size;
+
 	if (0 < lfs_format(&lfs, &cfg)) {
-		printf("[FileSystem] format error\n");
-		exit(EXIT_FAILURE);
+		FS_PRINT("[FileSystem] format error\n");
+		*OUT_result = false;
+		return;
 	}
 	if (0 < lfs_mount(&lfs, &cfg)) {
-		printf("[FileSystem] mount error\n");
-		exit(EXIT_FAILURE);
+		FS_PRINT("[FileSystem] mount error\n");
+		*OUT_result = false;
+		return;
 	}
+
+	*OUT_result = true;
 }
 
 void filesystem_PI_file_handling_create_file(
-    const asn1SccGAMMA_REPOSITORY_PATH *IN_object_path,
-    const asn1SccGAMMA_MAXIMUM_SIZE *IN_maximum_size,
-    const asn1SccGAMMA_ADDITIONAL_FILE_ATTRIBUTE *IN_attributes,
-    asn1SccGAMMA_BOOLEAN *OUT_result)
+    const asn1SccAPP_MARKER_REPOSITORY_PATH *IN_object_path,
+    const asn1SccAPP_MARKER_MAXIMUM_SIZE *IN_maximum_size,
+    const asn1SccAPP_MARKER_ADDITIONAL_FILE_ATTRIBUTE *IN_attributes,
+    asn1SccAPP_MARKER_BOOLEAN *OUT_result)
 
 {
 	lfs_file_t file;
@@ -88,8 +108,8 @@ void filesystem_PI_file_handling_create_file(
 }
 
 void filesystem_PI_file_handling_delete_file(
-    const asn1SccGAMMA_FILE_PATH *IN_object_path,
-    asn1SccGAMMA_BOOLEAN *OUT_result)
+    const asn1SccAPP_MARKER_FILE_PATH *IN_object_path,
+    asn1SccAPP_MARKER_BOOLEAN *OUT_result)
 
 {
 	int return_code =
@@ -97,18 +117,12 @@ void filesystem_PI_file_handling_delete_file(
 	*OUT_result = return_code == 0;
 }
 
-void filesystem_PI_read_object_memory(
-    const asn1SccGAMMA_MEMORY_BASE *IN_memory_base,
-    const asn1SccGAMMA_MEMORY_OFFSET *IN_offset,
-    const asn1SccGAMMA_MEMORY_OFFSET *IN_length,
-    asn1SccGAMMA_MEMORY_DATA *OUT_content, asn1SccGAMMA_BOOLEAN *OUT_result)
-
+void filesystem_PI_read_file(
+    const asn1SccAPP_MARKER_REPOSITORY_PATH *IN_file_path,
+    const asn1SccAPP_MARKER_MEMORY_OFFSET *IN_offset,
+    const asn1SccAPP_MARKER_MEMORY_OFFSET *IN_length,
+    asn1SccAPP_MARKER_MEMORY_DATA *OUT_content, asn1SccAPP_MARKER_BOOLEAN *OUT_result)
 {
-	if (IN_memory_base->kind != GAMMA_MEMORY_BASE_fs_memory_PRESENT) {
-		*OUT_result = false;
-		return;
-	}
-
 	lfs_file_t file;
 	int offset = *IN_offset;
 	int length = *IN_length;
@@ -116,13 +130,12 @@ void filesystem_PI_read_object_memory(
 	uint8_t buffer[cfg.cache_size];
 	memset(buffer, 0, cfg.cache_size);
 
-	struct lfs_attr file_attrs[8];
-
+	struct lfs_attr file_attrs;
 	struct lfs_file_config file_config = {
-	    .buffer = buffer, .attrs = file_attrs, .attr_count = 0};
+	    .buffer = buffer, .attrs = &file_attrs, .attr_count = 0};
 
 	int return_code = lfs_file_opencfg(
-	    &lfs, &file, IN_memory_base->u.fs_memory.field_data,
+	    &lfs, &file, IN_file_path->field_data,
 	    LFS_O_RDWR | LFS_O_CREAT, &file_config);
 	if (return_code < 0) {
 		*OUT_result = false;
@@ -151,18 +164,18 @@ void filesystem_PI_read_object_memory(
 }
 
 void filesystem_PI_report_content_of_repository_request(
-    const asn1SccGAMMA_REPOSITORY_PATH *IN_repository_path)
+    const asn1SccAPP_MARKER_REPOSITORY_PATH *IN_repository_path)
 
 {
 	lfs_dir_t dir;
 	struct lfs_info info;
-	asn1SccALPHA_REPOSITORY_OBJECTS repo_objects;
+	asn1SccAPP_MARKER_REPOSITORY_OBJECTS repo_objects;
 	repo_objects.field_data.nCount = 0;
 
 	int return_code =
 	    lfs_dir_open(&lfs, &dir, IN_repository_path->field_data);
 	if (return_code < 0) {
-		printf("[FileSystem] could not open a dir\n");
+		FS_PRINT("[FileSystem] could not open a dir\n");
 		return;
 	}
 
@@ -172,20 +185,20 @@ void filesystem_PI_report_content_of_repository_request(
 		if (info.type == LFS_TYPE_DIR) {
 			repo_objects.field_data
 			    .arr[repo_objects.field_data.nCount]
-			    .object_type = asn1SccALPHA_OBJECT_TYPE_directory;
+			    .object_type = asn1SccAPP_MARKER_OBJECT_TYPE_directory;
 		} else if (info.type == LFS_TYPE_REG) {
 			repo_objects.field_data
 			    .arr[repo_objects.field_data.nCount]
-			    .object_type = asn1SccALPHA_OBJECT_TYPE_file;
+			    .object_type = asn1SccAPP_MARKER_OBJECT_TYPE_file;
 		}
 		strncpy(
 		    repo_objects.field_data.arr[repo_objects.field_data.nCount]
 			.object_name.field_data,
 		    info.name,
-		    asn1SccALPHA_OBJECT_NAME_REQUIRED_BYTES_FOR_ENCODING + 1);
+		    asn1SccAPP_MARKER_OBJECT_NAME_REQUIRED_BYTES_FOR_ENCODING + 1);
 		repo_objects.field_data.arr[repo_objects.field_data.nCount]
 		    .object_name.field_data
-			[asn1SccALPHA_OBJECT_NAME_REQUIRED_BYTES_FOR_ENCODING] =
+			[asn1SccAPP_MARKER_OBJECT_NAME_REQUIRED_BYTES_FOR_ENCODING] =
 		    '\0';
 		repo_objects.field_data.nCount++;
 	}
@@ -195,18 +208,13 @@ void filesystem_PI_report_content_of_repository_request(
 	    IN_repository_path, &repo_objects);
 }
 
-void filesystem_PI_write_object_memory(
-    const asn1SccGAMMA_MEMORY_BASE *IN_memory_base,
-    const asn1SccGAMMA_MEMORY_OFFSET *IN_offset,
-    const asn1SccGAMMA_MEMORY_DATA *IN_content,
-    asn1SccGAMMA_BOOLEAN *OUT_result)
+void filesystem_PI_write_to_file(
+    const asn1SccAPP_MARKER_REPOSITORY_PATH *IN_file_path,
+    const asn1SccAPP_MARKER_MEMORY_OFFSET *IN_offset,
+    const asn1SccAPP_MARKER_MEMORY_DATA *IN_content,
+    asn1SccAPP_MARKER_BOOLEAN *OUT_result)
 
 {
-	if (IN_memory_base->kind != GAMMA_MEMORY_BASE_fs_memory_PRESENT) {
-		*OUT_result = false;
-		return;
-	}
-
 	lfs_file_t file;
 	int offset = *IN_offset;
 	int length = IN_content->field_data.nCount;
@@ -214,13 +222,12 @@ void filesystem_PI_write_object_memory(
 	uint8_t buffer[cfg.cache_size];
 	memset(buffer, 0, cfg.cache_size);
 
-	struct lfs_attr file_attrs[8];
-
+	struct lfs_attr file_attrs;
 	struct lfs_file_config file_config = {
-	    .buffer = buffer, .attrs = file_attrs, .attr_count = 0};
+	    .buffer = buffer, .attrs = &file_attrs, .attr_count = 0};
 
 	int return_code = lfs_file_opencfg(
-	    &lfs, &file, IN_memory_base->u.fs_memory.field_data,
+	    &lfs, &file, IN_file_path->field_data,
 	    LFS_O_RDWR | LFS_O_CREAT, &file_config);
 	if (return_code < 0) {
 		*OUT_result = false;
@@ -247,7 +254,7 @@ void filesystem_PI_write_object_memory(
 	*OUT_result = true;
 }
 
-int block_device_read(const struct lfs_config *c, lfs_block_t block,
+int block_device_read(const struct lfs_config *config, lfs_block_t block,
 		      lfs_off_t off, void *buffer, lfs_size_t size)
 {
 	const asn1SccMEMORY_BLOCK_INDEX block_index = block;
