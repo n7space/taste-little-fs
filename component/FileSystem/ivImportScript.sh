@@ -1,6 +1,6 @@
 #!/bin/bash
 
-user_input=$(zenity --entry --title="Enter the app name for sed" --text="Enter the app name for sed")
+user_input=$(zenity --entry --title="Enter the Application Process name to adjust data type names" --text="Enter the Application Process name to adjust data type names")
 
 if [ $? -eq 0 ]; then
     echo "You entered: $user_input"

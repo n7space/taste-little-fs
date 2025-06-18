@@ -9,6 +9,7 @@
 */
 #define LFS_NO_MALLOC
 #define LFS_YES_TRACE
+#define LFS_NO_ERROR
 
 #include "filesystem.h"
 #include "lfs.h"
@@ -46,14 +47,14 @@ struct lfs_config cfg = {
 
 void filesystem_startup(void) {}
 
-void filesystem_PI_init(const asn1SccGAMMA_INTEGER *IN_read_size,
-			const asn1SccGAMMA_INTEGER *IN_prog_size,
-			const asn1SccGAMMA_INTEGER *IN_block_size,
-			const asn1SccGAMMA_INTEGER *IN_block_count,
-			const asn1SccGAMMA_INTEGER *IN_block_cycles,
-			const asn1SccGAMMA_INTEGER *IN_cashe_size,
-			const asn1SccGAMMA_INTEGER *IN_lookahead_size,
-			asn1SccGAMMA_BOOLEAN *OUT_result)
+void filesystem_PI_init(const asn1SccT_UInt32 *IN_read_size,
+			const asn1SccT_UInt32 *IN_prog_size,
+			const asn1SccT_UInt32 *IN_block_size,
+			const asn1SccT_UInt32 *IN_block_count,
+			const asn1SccT_UInt32 *IN_block_cycles,
+			const asn1SccT_UInt32 *IN_cashe_size,
+			const asn1SccT_UInt32 *IN_lookahead_size,
+			asn1SccT_Boolean *OUT_result)
 {
 	cfg.read_size = *IN_read_size;
 	cfg.prog_size = *IN_prog_size;
@@ -62,6 +63,11 @@ void filesystem_PI_init(const asn1SccGAMMA_INTEGER *IN_read_size,
 	cfg.block_cycles = *IN_block_cycles;
 	cfg.cache_size = *IN_cashe_size;
 	cfg.lookahead_size = *IN_lookahead_size;
+
+	if(lfs_mount(&lfs, &cfg) == 0){
+		*OUT_result = true;
+		return;
+	}
 
 	if (0 < lfs_format(&lfs, &cfg)) {
 		FS_PRINT("[FileSystem] format error\n");

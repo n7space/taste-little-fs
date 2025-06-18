@@ -1,5 +1,5 @@
-<InterfaceView version="1.2">
-<Function id="{134a00cd-fade-4035-8488-3668f711174d}" name="FileSystem" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" startup_priority="2" instances_min="1" instances_max="1">
+<InterfaceView version="1.3" asn1file="filesystem.acn" UiFile="interfaceview.ui.xml" modifierHash="dccc37158">
+<Function id="{134a00cd-fade-4035-8488-3668f711174d}" name="FileSystem" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" instances_min="1" startup_priority="2" instances_max="1">
     <Property name="TASTE_IV_Properties::Default_Codegen" value="Ada"/>
 <Provided_Interface id="{d14bf9a4-c2c0-4c01-a9e0-23d6229283c8}" name="file_handling_create_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
     <Input_Parameter name="object_path" type="APP-MARKER-REPOSITORY-PATH" encoding="NATIVE"/>
@@ -33,14 +33,14 @@
 </Provided_Interface>
 
 <Provided_Interface id="{54a8a6f8-13b2-46cb-83c3-aceeae3602fa}" name="init" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
-    <Input_Parameter name="read_size" type="APP-MARKER-INTEGER" encoding="NATIVE"/>
-    <Input_Parameter name="prog_size" type="APP-MARKER-INTEGER" encoding="NATIVE"/>
-    <Input_Parameter name="block_size" type="APP-MARKER-INTEGER" encoding="NATIVE"/>
-    <Input_Parameter name="block_count" type="APP-MARKER-INTEGER" encoding="NATIVE"/>
-    <Input_Parameter name="block_cycles" type="APP-MARKER-INTEGER" encoding="NATIVE"/>
-    <Input_Parameter name="cashe_size" type="APP-MARKER-INTEGER" encoding="NATIVE"/>
-    <Input_Parameter name="lookahead_size" type="APP-MARKER-INTEGER" encoding="NATIVE"/>
-    <Output_Parameter name="result" type="APP-MARKER-BOOLEAN" encoding="NATIVE"/>
+    <Input_Parameter name="read_size" type="T-UInt32" encoding="NATIVE"/>
+    <Input_Parameter name="prog_size" type="T-UInt32" encoding="NATIVE"/>
+    <Input_Parameter name="block_size" type="T-UInt32" encoding="NATIVE"/>
+    <Input_Parameter name="block_count" type="T-UInt32" encoding="NATIVE"/>
+    <Input_Parameter name="block_cycles" type="T-UInt32" encoding="NATIVE"/>
+    <Input_Parameter name="cashe_size" type="T-UInt32" encoding="NATIVE"/>
+    <Input_Parameter name="lookahead_size" type="T-UInt32" encoding="NATIVE"/>
+    <Output_Parameter name="result" type="T-Boolean" encoding="NATIVE"/>
 </Provided_Interface>
 
 <Required_Interface id="{09aa92a4-c575-4b55-b7a3-448aac9329b7}" name="memory_read" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
@@ -76,7 +76,7 @@
     <Property name="Taste::Autonamed" value="true"/>
 </Required_Interface>
 
-<Required_Interface id="{0e5ded53-3d6d-427c-8e46-16b168fdb30e}" name="report_content_of_repository_request_respond" kind="Unprotected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" is_alarm="false" wcet="0" is_observable="false">
+<Required_Interface id="{0e5ded53-3d6d-427c-8e46-16b168fdb30e}" name="report_content_of_repository_request_respond" kind="Unprotected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" is_alarm="false" is_observable="false" wcet="0">
     <Input_Parameter name="repository_path" type="APP-MARKER-REPOSITORY-PATH" encoding="NATIVE"/>
     <Output_Parameter name="files" type="APP-MARKER-REPOSITORY-OBJECTS" encoding="NATIVE"/>
     <Property name="Taste::InheritPI" value="true"/>
@@ -113,5 +113,4 @@
 </Taste>
 </Entity>
 </UI>
-
 </InterfaceView>
