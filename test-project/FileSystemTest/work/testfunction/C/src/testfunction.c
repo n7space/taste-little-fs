@@ -106,6 +106,21 @@ void testfunction_startup(void) {}
 
 void testfunction_PI_trigger(void)
 {
+	const asn1SccGAMMA_INTEGER read_size = 16;
+	const asn1SccGAMMA_INTEGER prog_size = 16;
+	const asn1SccGAMMA_INTEGER block_size = 4096;
+	const asn1SccGAMMA_INTEGER block_count = 128;
+	const asn1SccGAMMA_INTEGER block_cycles = 500;
+	const asn1SccGAMMA_INTEGER cashe_size = 16;
+	const asn1SccGAMMA_INTEGER lookahead_size = 16;
+	asn1SccGAMMA_BOOLEAN result;
+
+	testfunction_RI_init(&read_size, &prog_size, &block_size, &block_count, &block_cycles, &cashe_size, &lookahead_size, &result);
+	if (!result) {
+		printf("TEST FAILURE!\n");
+		exit(EXIT_FAILURE);
+	}
+
 	test_file_create();
 	test_file_write();
 	test_file_read();
@@ -118,20 +133,20 @@ void testfunction_PI_trigger(void)
 
 void testfunction_PI_report_content_of_repository_request_respond(
     const asn1SccGAMMA_REPOSITORY_PATH *IN_repository_path,
-    asn1SccALPHA_REPOSITORY_OBJECTS *OUT_files)
+    asn1SccGAMMA_REPOSITORY_OBJECTS *OUT_files)
 
 {
 	if (!(OUT_files->field_data.nCount == 3 &&
 	      OUT_files->field_data.arr[0].object_type ==
-		  asn1SccALPHA_OBJECT_TYPE_directory &&
+		  asn1SccGAMMA_OBJECT_TYPE_directory &&
 	      strcmp(OUT_files->field_data.arr[0].object_name.field_data,
 		     ".") == 0 &&
 	      OUT_files->field_data.arr[1].object_type ==
-		  asn1SccALPHA_OBJECT_TYPE_directory &&
+		  asn1SccGAMMA_OBJECT_TYPE_directory &&
 	      strcmp(OUT_files->field_data.arr[1].object_name.field_data,
 		     "..") == 0 &&
 	      OUT_files->field_data.arr[2].object_type ==
-		  asn1SccALPHA_OBJECT_TYPE_file &&
+		  asn1SccGAMMA_OBJECT_TYPE_file &&
 	      strcmp(OUT_files->field_data.arr[2].object_name.field_data,
 		     "test_re") == 0)) {
 		printf("TEST FAILURE!\n");

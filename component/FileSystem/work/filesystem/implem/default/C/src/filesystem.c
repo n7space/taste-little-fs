@@ -16,6 +16,7 @@
 #include "string.h"
 
 #define MAXIMUM_OBJECT_THAT_CAN_BE_REPORTED 64
+// wyliczyć z dataview bits
 
 int block_device_read(const struct lfs_config *c, lfs_block_t block,
 		      lfs_off_t off, void *buffer, lfs_size_t size);
