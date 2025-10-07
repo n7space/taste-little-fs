@@ -23,8 +23,8 @@
 #endif
 
 #define MAXIMUM_OBJECT_THAT_CAN_BE_REPORTED                                    \
-	(asn1SccGAMMA_REPOSITORY_OBJECTS_REQUIRED_BITS_FOR_ACN_ENCODING /      \
-	 asn1SccGAMMA_REPOSITORY_OBJECT_REQUIRED_BITS_FOR_ACN_ENCODING)
+	(asn1SccLITTLE_FS_REPOSITORY_OBJECTS_REQUIRED_BITS_FOR_ACN_ENCODING /      \
+	 asn1SccLITTLE_FS_REPOSITORY_OBJECT_REQUIRED_BITS_FOR_ACN_ENCODING)
 
 int block_device_read(const struct lfs_config *c, lfs_block_t block,
 		      lfs_off_t off, void *buffer, lfs_size_t size);
@@ -84,10 +84,10 @@ void filesystem_PI_init(const asn1SccT_UInt32 *IN_read_size,
 }
 
 void filesystem_PI_file_handling_create_file(
-    const asn1SccGAMMA_REPOSITORY_PATH *IN_object_path,
-    const asn1SccGAMMA_MAXIMUM_SIZE *IN_maximum_size,
-    const asn1SccGAMMA_ADDITIONAL_FILE_ATTRIBUTE *IN_attributes,
-    asn1SccGAMMA_BOOLEAN *OUT_result)
+    const asn1SccLITTLE_FS_REPOSITORY_PATH *IN_object_path,
+    const asn1SccLITTLE_FS_MAXIMUM_SIZE *IN_maximum_size,
+    const asn1SccLITTLE_FS_ADDITIONAL_FILE_ATTRIBUTE *IN_attributes,
+    asn1SccLITTLE_FS_BOOLEAN *OUT_result)
 
 {
 	lfs_file_t file;
@@ -114,8 +114,8 @@ void filesystem_PI_file_handling_create_file(
 }
 
 void filesystem_PI_file_handling_delete_file(
-    const asn1SccGAMMA_FILE_PATH *IN_object_path,
-    asn1SccGAMMA_BOOLEAN *OUT_result)
+    const asn1SccLITTLE_FS_FILE_PATH *IN_object_path,
+    asn1SccLITTLE_FS_BOOLEAN *OUT_result)
 
 {
 	int return_code =
@@ -124,10 +124,10 @@ void filesystem_PI_file_handling_delete_file(
 }
 
 void filesystem_PI_read_file(
-    const asn1SccGAMMA_REPOSITORY_PATH *IN_file_path,
-    const asn1SccGAMMA_MEMORY_OFFSET *IN_offset,
-    const asn1SccGAMMA_MEMORY_OFFSET *IN_length,
-    asn1SccGAMMA_MEMORY_DATA *OUT_content, asn1SccGAMMA_BOOLEAN *OUT_result)
+    const asn1SccLITTLE_FS_REPOSITORY_PATH *IN_file_path,
+    const asn1SccLITTLE_FS_MEMORY_OFFSET *IN_offset,
+    const asn1SccLITTLE_FS_MEMORY_OFFSET *IN_length,
+    asn1SccLITTLE_FS_MEMORY_DATA *OUT_content, asn1SccLITTLE_FS_BOOLEAN *OUT_result)
 {
 	lfs_file_t file;
 	int offset = *IN_offset;
@@ -170,12 +170,12 @@ void filesystem_PI_read_file(
 }
 
 void filesystem_PI_report_content_of_repository_request(
-    const asn1SccGAMMA_REPOSITORY_PATH *IN_repository_path)
+    const asn1SccLITTLE_FS_REPOSITORY_PATH *IN_repository_path)
 
 {
 	lfs_dir_t dir;
 	struct lfs_info info;
-	asn1SccGAMMA_REPOSITORY_OBJECTS repo_objects;
+	asn1SccLITTLE_FS_REPOSITORY_OBJECTS repo_objects;
 	repo_objects.field_data.nCount = 0;
 
 	int return_code =
@@ -191,20 +191,20 @@ void filesystem_PI_report_content_of_repository_request(
 		if (info.type == LFS_TYPE_DIR) {
 			repo_objects.field_data
 			    .arr[repo_objects.field_data.nCount]
-			    .object_type = asn1SccGAMMA_OBJECT_TYPE_directory;
+			    .object_type = asn1SccLITTLE_FS_OBJECT_TYPE_directory;
 		} else if (info.type == LFS_TYPE_REG) {
 			repo_objects.field_data
 			    .arr[repo_objects.field_data.nCount]
-			    .object_type = asn1SccGAMMA_OBJECT_TYPE_file;
+			    .object_type = asn1SccLITTLE_FS_OBJECT_TYPE_file;
 		}
 		strncpy(
 		    repo_objects.field_data.arr[repo_objects.field_data.nCount]
 			.object_name.field_data,
 		    info.name,
-		    asn1SccGAMMA_OBJECT_NAME_REQUIRED_BYTES_FOR_ENCODING + 1);
+		    asn1SccLITTLE_FS_OBJECT_NAME_REQUIRED_BYTES_FOR_ENCODING + 1);
 		repo_objects.field_data.arr[repo_objects.field_data.nCount]
 		    .object_name.field_data
-			[asn1SccGAMMA_OBJECT_NAME_REQUIRED_BYTES_FOR_ENCODING] =
+			[asn1SccLITTLE_FS_OBJECT_NAME_REQUIRED_BYTES_FOR_ENCODING] =
 		    '\0';
 		repo_objects.field_data.nCount++;
 	}
@@ -215,10 +215,10 @@ void filesystem_PI_report_content_of_repository_request(
 }
 
 void filesystem_PI_write_to_file(
-    const asn1SccGAMMA_REPOSITORY_PATH *IN_file_path,
-    const asn1SccGAMMA_MEMORY_OFFSET *IN_offset,
-    const asn1SccGAMMA_MEMORY_DATA *IN_content,
-    asn1SccGAMMA_BOOLEAN *OUT_result)
+    const asn1SccLITTLE_FS_REPOSITORY_PATH *IN_file_path,
+    const asn1SccLITTLE_FS_MEMORY_OFFSET *IN_offset,
+    const asn1SccLITTLE_FS_MEMORY_DATA *IN_content,
+    asn1SccLITTLE_FS_BOOLEAN *OUT_result)
 
 {
 	lfs_file_t file;
