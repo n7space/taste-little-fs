@@ -109,11 +109,11 @@ void testfunction_PI_trigger(void)
 	const asn1SccLITTLE_FS_INTEGER block_size = 4096;
 	const asn1SccLITTLE_FS_INTEGER block_count = 128;
 	const asn1SccLITTLE_FS_INTEGER block_cycles = 500;
-	const asn1SccLITTLE_FS_INTEGER cashe_size = 16;
+	const asn1SccLITTLE_FS_INTEGER cache_size = 16;
 	const asn1SccLITTLE_FS_INTEGER lookahead_size = 16;
 	asn1SccLITTLE_FS_BOOLEAN result;
 
-	testfunction_RI_init(&read_size, &prog_size, &block_size, &block_count, &block_cycles, &cashe_size, &lookahead_size, &result);
+	testfunction_RI_init(&read_size, &prog_size, &block_size, &block_count, &block_cycles, &cache_size, &lookahead_size, &result);
 	if (!result) {
 		printf("TEST FAILURE!\n");
 		exit(EXIT_FAILURE);

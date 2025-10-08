@@ -52,7 +52,7 @@ void filesystem_PI_init(const asn1SccT_UInt32 *IN_read_size,
 			const asn1SccT_UInt32 *IN_block_size,
 			const asn1SccT_UInt32 *IN_block_count,
 			const asn1SccT_UInt32 *IN_block_cycles,
-			const asn1SccT_UInt32 *IN_cashe_size,
+			const asn1SccT_UInt32 *IN_cache_size,
 			const asn1SccT_UInt32 *IN_lookahead_size,
 			asn1SccT_Boolean *OUT_result)
 {
@@ -61,7 +61,7 @@ void filesystem_PI_init(const asn1SccT_UInt32 *IN_read_size,
 	cfg.block_size = *IN_block_size;
 	cfg.block_count = *IN_block_count;
 	cfg.block_cycles = *IN_block_cycles;
-	cfg.cache_size = *IN_cashe_size;
+	cfg.cache_size = *IN_cache_size;
 	cfg.lookahead_size = *IN_lookahead_size;
 
 	if(lfs_mount(&lfs, &cfg) == 0){
