@@ -4,10 +4,10 @@ CONFIG += generateC
 
 DISTFILES +=  \
     $(HOME)/tool-inst/share/taste-types/taste-types.asn \
-    filesystem.acn \
-    filesystem.asn \
     FileSystemTest.acn \
-    FileSystemTest.asn
+    FileSystemTest.asn \
+    LittleFS.acn \
+    LittleFS.asn
 DISTFILES += FileSystemTest.msc
 DISTFILES += interfaceview.xml
 DISTFILES += work/binaries/*.msc

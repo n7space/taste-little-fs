@@ -1,35 +1,35 @@
-<InterfaceView version="1.3" asn1file="FileSystemTest.acn" UiFile="interfaceview.ui.xml" modifierHash="dccc37158">
-<Function id="{f384a2b9-00a9-40b5-ab66-36dec79e5c51}" name="FileSystem" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" startup_priority="2" instances_max="1" instances_min="1">
+<InterfaceView version="1.3" asn1file="LittleFS.acn" UiFile="interfaceview.ui.xml" modifierHash="8f9a913">
+<Function id="{f384a2b9-00a9-40b5-ab66-36dec79e5c51}" name="FileSystem" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" instances_min="1" startup_priority="2" instances_max="1">
     <Property name="TASTE_IV_Properties::Default_Codegen" value="Ada"/>
 <Provided_Interface id="{e12abc0c-0734-46a6-842d-b3c81d4165bd}" name="file_handling_create_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
-    <Input_Parameter name="object_path" type="GAMMA-REPOSITORY-PATH" encoding="NATIVE"/>
-    <Input_Parameter name="maximum_size" type="GAMMA-MAXIMUM-SIZE" encoding="NATIVE"/>
-    <Input_Parameter name="attributes" type="GAMMA-ADDITIONAL-FILE-ATTRIBUTE" encoding="NATIVE"/>
-    <Output_Parameter name="result" type="GAMMA-BOOLEAN" encoding="NATIVE"/>
+    <Input_Parameter name="object_path" type="LITTLE-FS-REPOSITORY-PATH" encoding="NATIVE"/>
+    <Input_Parameter name="maximum_size" type="LITTLE-FS-MAXIMUM-SIZE" encoding="NATIVE"/>
+    <Input_Parameter name="attributes" type="LITTLE-FS-ADDITIONAL-FILE-ATTRIBUTE" encoding="NATIVE"/>
+    <Output_Parameter name="result" type="LITTLE-FS-BOOLEAN" encoding="NATIVE"/>
 </Provided_Interface>
 
 <Provided_Interface id="{d6f5f071-07bd-423d-b78d-368f6e9905e1}" name="file_handling_delete_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
-    <Input_Parameter name="object_path" type="GAMMA-FILE-PATH" encoding="NATIVE"/>
-    <Output_Parameter name="result" type="GAMMA-BOOLEAN" encoding="NATIVE"/>
+    <Input_Parameter name="object_path" type="LITTLE-FS-FILE-PATH" encoding="NATIVE"/>
+    <Output_Parameter name="result" type="LITTLE-FS-BOOLEAN" encoding="NATIVE"/>
 </Provided_Interface>
 
 <Provided_Interface id="{11c0261f-8110-4690-b657-4e6082997c92}" name="read_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
-    <Input_Parameter name="file_path" type="GAMMA-REPOSITORY-PATH" encoding="NATIVE"/>
-    <Input_Parameter name="offset" type="GAMMA-MEMORY-OFFSET" encoding="NATIVE"/>
-    <Input_Parameter name="length" type="GAMMA-MEMORY-OFFSET" encoding="NATIVE"/>
-    <Output_Parameter name="content" type="GAMMA-MEMORY-DATA" encoding="NATIVE"/>
-    <Output_Parameter name="result" type="GAMMA-BOOLEAN" encoding="NATIVE"/>
+    <Input_Parameter name="file_path" type="LITTLE-FS-REPOSITORY-PATH" encoding="NATIVE"/>
+    <Input_Parameter name="offset" type="LITTLE-FS-MEMORY-OFFSET" encoding="NATIVE"/>
+    <Input_Parameter name="length" type="LITTLE-FS-MEMORY-OFFSET" encoding="NATIVE"/>
+    <Output_Parameter name="content" type="LITTLE-FS-MEMORY-DATA" encoding="NATIVE"/>
+    <Output_Parameter name="result" type="LITTLE-FS-BOOLEAN" encoding="NATIVE"/>
 </Provided_Interface>
 
 <Provided_Interface id="{b7a7a346-28a3-457e-b1e8-7f371a646289}" name="write_to_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
-    <Input_Parameter name="file_path" type="GAMMA-REPOSITORY-PATH" encoding="NATIVE"/>
-    <Input_Parameter name="offset" type="GAMMA-MEMORY-OFFSET" encoding="NATIVE"/>
-    <Input_Parameter name="content" type="GAMMA-MEMORY-DATA" encoding="NATIVE"/>
-    <Output_Parameter name="result" type="GAMMA-BOOLEAN" encoding="NATIVE"/>
+    <Input_Parameter name="file_path" type="LITTLE-FS-REPOSITORY-PATH" encoding="NATIVE"/>
+    <Input_Parameter name="offset" type="LITTLE-FS-MEMORY-OFFSET" encoding="NATIVE"/>
+    <Input_Parameter name="content" type="LITTLE-FS-MEMORY-DATA" encoding="NATIVE"/>
+    <Output_Parameter name="result" type="LITTLE-FS-BOOLEAN" encoding="NATIVE"/>
 </Provided_Interface>
 
 <Provided_Interface id="{8426dfb0-ad6c-4fa6-8e29-f657b9d09561}" name="report_content_of_repository_request" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
-    <Input_Parameter name="repository_path" type="GAMMA-REPOSITORY-PATH" encoding="NATIVE"/>
+    <Input_Parameter name="repository_path" type="LITTLE-FS-REPOSITORY-PATH" encoding="NATIVE"/>
 </Provided_Interface>
 
 <Provided_Interface id="{46944f8b-118b-43aa-9a3d-49e2243ee18c}" name="init" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
@@ -38,7 +38,7 @@
     <Input_Parameter name="block_size" type="T-UInt32" encoding="NATIVE"/>
     <Input_Parameter name="block_count" type="T-UInt32" encoding="NATIVE"/>
     <Input_Parameter name="block_cycles" type="T-UInt32" encoding="NATIVE"/>
-    <Input_Parameter name="cashe_size" type="T-UInt32" encoding="NATIVE"/>
+    <Input_Parameter name="cache_size" type="T-UInt32" encoding="NATIVE"/>
     <Input_Parameter name="lookahead_size" type="T-UInt32" encoding="NATIVE"/>
     <Output_Parameter name="result" type="T-Boolean" encoding="NATIVE"/>
 </Provided_Interface>
@@ -76,9 +76,9 @@
     <Property name="Taste::Autonamed" value="true"/>
 </Required_Interface>
 
-<Required_Interface id="{d4fc4adf-baa0-4301-af30-f16a9d882381}" name="report_content_of_repository_request_respond" kind="Unprotected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" is_alarm="false" is_observable="false" wcet="0">
-    <Input_Parameter name="repository_path" type="GAMMA-REPOSITORY-PATH" encoding="NATIVE"/>
-    <Output_Parameter name="files" type="GAMMA-REPOSITORY-OBJECTS" encoding="NATIVE"/>
+<Required_Interface id="{d4fc4adf-baa0-4301-af30-f16a9d882381}" name="report_content_of_repository_request_respond" kind="Unprotected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" is_observable="false" wcet="0" is_alarm="false">
+    <Input_Parameter name="repository_path" type="LITTLE-FS-REPOSITORY-PATH" encoding="NATIVE"/>
+    <Output_Parameter name="files" type="LITTLE-FS-REPOSITORY-OBJECTS" encoding="NATIVE"/>
     <Property name="Taste::InheritPI" value="true"/>
     <Property name="Taste::Autonamed" value="true"/>
 </Required_Interface>
@@ -88,7 +88,7 @@
     </Implementations>
 </Function>
 
-<Function id="{54b82e00-8e3f-4221-99ff-4da25fdaacc0}" name="MemoryAccess" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" startup_priority="3" instances_max="1" instances_min="1">
+<Function id="{54b82e00-8e3f-4221-99ff-4da25fdaacc0}" name="MemoryAccess" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" instances_min="1" startup_priority="3" instances_max="1">
     <Property name="TASTE_IV_Properties::Default_Codegen" value="Ada"/>
 <Provided_Interface id="{e6df1aac-b45d-4f76-9f1c-e7275d3f7dd4}" name="memory_read" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
     <Input_Parameter name="block_index" type="MEMORY-BLOCK-INDEX" encoding="NATIVE"/>
@@ -120,53 +120,53 @@
     </Implementations>
 </Function>
 
-<Function id="{8bfe9263-30ef-41c1-88e4-b178dc69ac35}" name="TestFunction" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" startup_priority="1" instances_max="1" instances_min="1">
+<Function id="{8bfe9263-30ef-41c1-88e4-b178dc69ac35}" name="TestFunction" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" instances_min="1" startup_priority="1" instances_max="1">
     <Property name="TASTE_IV_Properties::Default_Codegen" value="Ada"/>
-<Provided_Interface id="{9354df70-ac40-44f2-a877-432e853e6031}" name="report_content_of_repository_request_respond" kind="Unprotected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" is_alarm="false" is_observable="false" wcet="0">
-    <Input_Parameter name="repository_path" type="GAMMA-REPOSITORY-PATH" encoding="NATIVE"/>
-    <Output_Parameter name="files" type="GAMMA-REPOSITORY-OBJECTS" encoding="NATIVE"/>
+<Provided_Interface id="{9354df70-ac40-44f2-a877-432e853e6031}" name="report_content_of_repository_request_respond" kind="Unprotected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" is_observable="false" wcet="0" is_alarm="false">
+    <Input_Parameter name="repository_path" type="LITTLE-FS-REPOSITORY-PATH" encoding="NATIVE"/>
+    <Output_Parameter name="files" type="LITTLE-FS-REPOSITORY-OBJECTS" encoding="NATIVE"/>
 </Provided_Interface>
 
-<Provided_Interface id="{b8552150-ea2e-4110-99e2-02e5d1596e9a}" name="trigger" kind="Cyclic" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" stack_size="1024" dispatch_offset="0" priority="1" wcet="0" period="1000">
+<Provided_Interface id="{b8552150-ea2e-4110-99e2-02e5d1596e9a}" name="trigger" kind="Cyclic" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" stack_size="1024" period="1000" wcet="0" priority="1" dispatch_offset="0">
 </Provided_Interface>
 
 <Required_Interface id="{f9bad402-8faa-43b9-8c54-a65224060d30}" name="file_handling_create_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
-    <Input_Parameter name="object_path" type="GAMMA-REPOSITORY-PATH" encoding="NATIVE"/>
-    <Input_Parameter name="maximum_size" type="GAMMA-MAXIMUM-SIZE" encoding="NATIVE"/>
-    <Input_Parameter name="attributes" type="GAMMA-ADDITIONAL-FILE-ATTRIBUTE" encoding="NATIVE"/>
-    <Output_Parameter name="result" type="GAMMA-BOOLEAN" encoding="NATIVE"/>
+    <Input_Parameter name="object_path" type="LITTLE-FS-REPOSITORY-PATH" encoding="NATIVE"/>
+    <Input_Parameter name="maximum_size" type="LITTLE-FS-MAXIMUM-SIZE" encoding="NATIVE"/>
+    <Input_Parameter name="attributes" type="LITTLE-FS-ADDITIONAL-FILE-ATTRIBUTE" encoding="NATIVE"/>
+    <Output_Parameter name="result" type="LITTLE-FS-BOOLEAN" encoding="NATIVE"/>
     <Property name="Taste::InheritPI" value="true"/>
     <Property name="Taste::Autonamed" value="true"/>
 </Required_Interface>
 
 <Required_Interface id="{fc142289-91c5-4e06-87dc-674264d4e506}" name="file_handling_delete_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
-    <Input_Parameter name="object_path" type="GAMMA-FILE-PATH" encoding="NATIVE"/>
-    <Output_Parameter name="result" type="GAMMA-BOOLEAN" encoding="NATIVE"/>
+    <Input_Parameter name="object_path" type="LITTLE-FS-FILE-PATH" encoding="NATIVE"/>
+    <Output_Parameter name="result" type="LITTLE-FS-BOOLEAN" encoding="NATIVE"/>
     <Property name="Taste::InheritPI" value="true"/>
     <Property name="Taste::Autonamed" value="true"/>
 </Required_Interface>
 
 <Required_Interface id="{2a5a09cc-24ca-4580-a0af-5057eaff8f3b}" name="read_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
-    <Input_Parameter name="file_path" type="GAMMA-REPOSITORY-PATH" encoding="NATIVE"/>
-    <Input_Parameter name="offset" type="GAMMA-MEMORY-OFFSET" encoding="NATIVE"/>
-    <Input_Parameter name="length" type="GAMMA-MEMORY-OFFSET" encoding="NATIVE"/>
-    <Output_Parameter name="content" type="GAMMA-MEMORY-DATA" encoding="NATIVE"/>
-    <Output_Parameter name="result" type="GAMMA-BOOLEAN" encoding="NATIVE"/>
+    <Input_Parameter name="file_path" type="LITTLE-FS-REPOSITORY-PATH" encoding="NATIVE"/>
+    <Input_Parameter name="offset" type="LITTLE-FS-MEMORY-OFFSET" encoding="NATIVE"/>
+    <Input_Parameter name="length" type="LITTLE-FS-MEMORY-OFFSET" encoding="NATIVE"/>
+    <Output_Parameter name="content" type="LITTLE-FS-MEMORY-DATA" encoding="NATIVE"/>
+    <Output_Parameter name="result" type="LITTLE-FS-BOOLEAN" encoding="NATIVE"/>
     <Property name="Taste::InheritPI" value="true"/>
     <Property name="Taste::Autonamed" value="true"/>
 </Required_Interface>
 
 <Required_Interface id="{d2992185-47e3-4787-8805-f18214a8c1ec}" name="write_to_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
-    <Input_Parameter name="file_path" type="GAMMA-REPOSITORY-PATH" encoding="NATIVE"/>
-    <Input_Parameter name="offset" type="GAMMA-MEMORY-OFFSET" encoding="NATIVE"/>
-    <Input_Parameter name="content" type="GAMMA-MEMORY-DATA" encoding="NATIVE"/>
-    <Output_Parameter name="result" type="GAMMA-BOOLEAN" encoding="NATIVE"/>
+    <Input_Parameter name="file_path" type="LITTLE-FS-REPOSITORY-PATH" encoding="NATIVE"/>
+    <Input_Parameter name="offset" type="LITTLE-FS-MEMORY-OFFSET" encoding="NATIVE"/>
+    <Input_Parameter name="content" type="LITTLE-FS-MEMORY-DATA" encoding="NATIVE"/>
+    <Output_Parameter name="result" type="LITTLE-FS-BOOLEAN" encoding="NATIVE"/>
     <Property name="Taste::InheritPI" value="true"/>
     <Property name="Taste::Autonamed" value="true"/>
 </Required_Interface>
 
 <Required_Interface id="{4e8ef958-8bfd-43c3-98d8-eca756618650}" name="report_content_of_repository_request" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
-    <Input_Parameter name="repository_path" type="GAMMA-REPOSITORY-PATH" encoding="NATIVE"/>
+    <Input_Parameter name="repository_path" type="LITTLE-FS-REPOSITORY-PATH" encoding="NATIVE"/>
     <Property name="Taste::InheritPI" value="true"/>
     <Property name="Taste::Autonamed" value="true"/>
 </Required_Interface>
@@ -177,7 +177,7 @@
     <Input_Parameter name="block_size" type="T-UInt32" encoding="NATIVE"/>
     <Input_Parameter name="block_count" type="T-UInt32" encoding="NATIVE"/>
     <Input_Parameter name="block_cycles" type="T-UInt32" encoding="NATIVE"/>
-    <Input_Parameter name="cashe_size" type="T-UInt32" encoding="NATIVE"/>
+    <Input_Parameter name="cache_size" type="T-UInt32" encoding="NATIVE"/>
     <Input_Parameter name="lookahead_size" type="T-UInt32" encoding="NATIVE"/>
     <Output_Parameter name="result" type="T-Boolean" encoding="NATIVE"/>
     <Property name="Taste::InheritPI" value="true"/>
@@ -189,24 +189,24 @@
     </Implementations>
 </Function>
 
-<Connection id="{6ff2cfe2-9e0d-4a74-80b7-deda6922c42e}" name="TestFunction_read_file____FileSystem_read_file" required_system_element="NO">
-    <Source iface_id="{2a5a09cc-24ca-4580-a0af-5057eaff8f3b}" func_name="TestFunction" ri_name="read_file" />
-    <Target iface_id="{11c0261f-8110-4690-b657-4e6082997c92}" func_name="FileSystem" pi_name="read_file" />
-</Connection>
-
 <Connection id="{427de18d-bd7f-4c3b-91c1-728da23e1ce0}" required_system_element="NO">
     <Source iface_id="{ce4d8267-5616-4926-8f00-2beb65e43c1e}" func_name="FileSystem" ri_name="memory_erase" />
     <Target iface_id="{937d3c24-866a-4550-89fa-618aaeb2d307}" func_name="MemoryAccess" pi_name="memory_erase" />
 </Connection>
 
-<Connection id="{da3e13af-0a82-4e44-b575-439eb1634035}" required_system_element="NO">
-    <Source iface_id="{d4fc4adf-baa0-4301-af30-f16a9d882381}" func_name="FileSystem" ri_name="report_content_of_repository_request_respond" />
-    <Target iface_id="{9354df70-ac40-44f2-a877-432e853e6031}" func_name="TestFunction" pi_name="report_content_of_repository_request_respond" />
+<Connection id="{6ff2cfe2-9e0d-4a74-80b7-deda6922c42e}" name="TestFunction_read_file____FileSystem_read_file" required_system_element="NO">
+    <Source iface_id="{2a5a09cc-24ca-4580-a0af-5057eaff8f3b}" func_name="TestFunction" ri_name="read_file" />
+    <Target iface_id="{11c0261f-8110-4690-b657-4e6082997c92}" func_name="FileSystem" pi_name="read_file" />
 </Connection>
 
 <Connection id="{ae122885-0c66-4dae-add0-5eba210703d0}" name="TestFunction_write_to_file____FileSystem_write_to_file" required_system_element="NO">
     <Source iface_id="{d2992185-47e3-4787-8805-f18214a8c1ec}" func_name="TestFunction" ri_name="write_to_file" />
     <Target iface_id="{b7a7a346-28a3-457e-b1e8-7f371a646289}" func_name="FileSystem" pi_name="write_to_file" />
+</Connection>
+
+<Connection id="{da3e13af-0a82-4e44-b575-439eb1634035}" required_system_element="NO">
+    <Source iface_id="{d4fc4adf-baa0-4301-af30-f16a9d882381}" func_name="FileSystem" ri_name="report_content_of_repository_request_respond" />
+    <Target iface_id="{9354df70-ac40-44f2-a877-432e853e6031}" func_name="TestFunction" pi_name="report_content_of_repository_request_respond" />
 </Connection>
 
 <Connection id="{e90d5cb6-ff14-4649-a8d9-53e3e05029fe}" required_system_element="NO">
@@ -219,16 +219,6 @@
     <Target iface_id="{8426dfb0-ad6c-4fa6-8e29-f657b9d09561}" func_name="FileSystem" pi_name="report_content_of_repository_request" />
 </Connection>
 
-<Connection id="{f6e3d7b0-c4fe-48fe-9aef-7513c3667d2c}" required_system_element="NO">
-    <Source iface_id="{bc05e3e0-c41c-4157-9685-70239caba357}" func_name="TestFunction" ri_name="init" />
-    <Target iface_id="{46944f8b-118b-43aa-9a3d-49e2243ee18c}" func_name="FileSystem" pi_name="init" />
-</Connection>
-
-<Connection id="{99912e85-2705-4012-82b2-b429485db2d3}" required_system_element="NO">
-    <Source iface_id="{fc142289-91c5-4e06-87dc-674264d4e506}" func_name="TestFunction" ri_name="file_handling_delete_file" />
-    <Target iface_id="{d6f5f071-07bd-423d-b78d-368f6e9905e1}" func_name="FileSystem" pi_name="file_handling_delete_file" />
-</Connection>
-
 <Connection id="{2df8c211-b7e1-4a36-bbc5-83531ae7c8dc}" required_system_element="NO">
     <Source iface_id="{f5723bfd-84b2-4acf-9501-15147a0e013f}" func_name="FileSystem" ri_name="memory_sync" />
     <Target iface_id="{6dad7f2c-a8a9-435e-8418-d660ba6b87e7}" func_name="MemoryAccess" pi_name="memory_sync" />
@@ -237,6 +227,16 @@
 <Connection id="{12c27233-e774-4c28-9a93-0922aa7e589a}" required_system_element="NO">
     <Source iface_id="{f9bad402-8faa-43b9-8c54-a65224060d30}" func_name="TestFunction" ri_name="file_handling_create_file" />
     <Target iface_id="{e12abc0c-0734-46a6-842d-b3c81d4165bd}" func_name="FileSystem" pi_name="file_handling_create_file" />
+</Connection>
+
+<Connection id="{99912e85-2705-4012-82b2-b429485db2d3}" required_system_element="NO">
+    <Source iface_id="{fc142289-91c5-4e06-87dc-674264d4e506}" func_name="TestFunction" ri_name="file_handling_delete_file" />
+    <Target iface_id="{d6f5f071-07bd-423d-b78d-368f6e9905e1}" func_name="FileSystem" pi_name="file_handling_delete_file" />
+</Connection>
+
+<Connection id="{f6e3d7b0-c4fe-48fe-9aef-7513c3667d2c}" required_system_element="NO">
+    <Source iface_id="{bc05e3e0-c41c-4157-9685-70239caba357}" func_name="TestFunction" ri_name="init" />
+    <Target iface_id="{46944f8b-118b-43aa-9a3d-49e2243ee18c}" func_name="FileSystem" pi_name="init" />
 </Connection>
 
 <Connection id="{a4265d26-1ed6-4db9-81c8-a704284f351c}" required_system_element="NO">

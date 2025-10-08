@@ -1,116 +1,114 @@
-<InterfaceView version="1.3" asn1file="filesystem.acn" UiFile="interfaceview.ui.xml" modifierHash="dccc37158">
-<Function id="{134a00cd-fade-4035-8488-3668f711174d}" name="FileSystem" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" instances_min="1" startup_priority="2" instances_max="1">
+<InterfaceView version="1.2">
+<Function id="{3cab689b-7f4c-4904-bc99-a7c6d87728f4}" name="FileSystem" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" instances_min="1" instances_max="1" startup_priority="2">
     <Property name="TASTE_IV_Properties::Default_Codegen" value="Ada"/>
-<Provided_Interface id="{d14bf9a4-c2c0-4c01-a9e0-23d6229283c8}" name="file_handling_create_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
-    <Input_Parameter name="object_path" type="APP-MARKER-REPOSITORY-PATH" encoding="NATIVE"/>
-    <Input_Parameter name="maximum_size" type="APP-MARKER-MAXIMUM-SIZE" encoding="NATIVE"/>
-    <Input_Parameter name="attributes" type="APP-MARKER-ADDITIONAL-FILE-ATTRIBUTE" encoding="NATIVE"/>
-    <Output_Parameter name="result" type="APP-MARKER-BOOLEAN" encoding="NATIVE"/>
+<Provided_Interface id="{c6f01ffd-7945-43e7-8b65-1a373602b587}" name="file_handling_create_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="object_path" type="LITTLE-FS-REPOSITORY-PATH" encoding="NATIVE"/>
+    <Input_Parameter name="maximum_size" type="LITTLE-FS-MAXIMUM-SIZE" encoding="NATIVE"/>
+    <Input_Parameter name="attributes" type="LITTLE-FS-ADDITIONAL-FILE-ATTRIBUTE" encoding="NATIVE"/>
+    <Output_Parameter name="result" type="LITTLE-FS-BOOLEAN" encoding="NATIVE"/>
 </Provided_Interface>
 
-<Provided_Interface id="{e6273eeb-50ab-432b-a0d0-c1da30ed203d}" name="file_handling_delete_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
-    <Input_Parameter name="object_path" type="APP-MARKER-FILE-PATH" encoding="NATIVE"/>
-    <Output_Parameter name="result" type="APP-MARKER-BOOLEAN" encoding="NATIVE"/>
+<Provided_Interface id="{247d83cc-78b0-4b87-9bb3-d94270a45018}" name="file_handling_delete_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="object_path" type="LITTLE-FS-FILE-PATH" encoding="NATIVE"/>
+    <Output_Parameter name="result" type="LITTLE-FS-BOOLEAN" encoding="NATIVE"/>
 </Provided_Interface>
 
-<Provided_Interface id="{2787b124-266d-43bc-89f4-e8d96ac1f500}" name="read_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
-    <Input_Parameter name="file_path" type="APP-MARKER-REPOSITORY-PATH" encoding="NATIVE"/>
-    <Input_Parameter name="offset" type="APP-MARKER-MEMORY-OFFSET" encoding="NATIVE"/>
-    <Input_Parameter name="length" type="APP-MARKER-MEMORY-OFFSET" encoding="NATIVE"/>
-    <Output_Parameter name="content" type="APP-MARKER-MEMORY-DATA" encoding="NATIVE"/>
-    <Output_Parameter name="result" type="APP-MARKER-BOOLEAN" encoding="NATIVE"/>
+<Provided_Interface id="{ffaa8fa2-2e50-4fa0-bea1-b5b74ef79c7f}" name="read_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="file_path" type="LITTLE-FS-REPOSITORY-PATH" encoding="NATIVE"/>
+    <Input_Parameter name="offset" type="LITTLE-FS-MEMORY-OFFSET" encoding="NATIVE"/>
+    <Input_Parameter name="length" type="LITTLE-FS-MEMORY-OFFSET" encoding="NATIVE"/>
+    <Output_Parameter name="content" type="LITTLE-FS-MEMORY-DATA" encoding="NATIVE"/>
+    <Output_Parameter name="result" type="LITTLE-FS-BOOLEAN" encoding="NATIVE"/>
 </Provided_Interface>
 
-<Provided_Interface id="{12ab21b8-80ec-4e6b-bf39-02b8a9a70e94}" name="write_to_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
-    <Input_Parameter name="file_path" type="APP-MARKER-REPOSITORY-PATH" encoding="NATIVE"/>
-    <Input_Parameter name="offset" type="APP-MARKER-MEMORY-OFFSET" encoding="NATIVE"/>
-    <Input_Parameter name="content" type="APP-MARKER-MEMORY-DATA" encoding="NATIVE"/>
-    <Output_Parameter name="result" type="APP-MARKER-BOOLEAN" encoding="NATIVE"/>
+<Provided_Interface id="{c79fb202-770f-4354-9a61-760067a79b02}" name="write_to_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="file_path" type="LITTLE-FS-REPOSITORY-PATH" encoding="NATIVE"/>
+    <Input_Parameter name="offset" type="LITTLE-FS-MEMORY-OFFSET" encoding="NATIVE"/>
+    <Input_Parameter name="content" type="LITTLE-FS-MEMORY-DATA" encoding="NATIVE"/>
+    <Output_Parameter name="result" type="LITTLE-FS-BOOLEAN" encoding="NATIVE"/>
 </Provided_Interface>
 
-<Provided_Interface id="{9b53cebe-033a-4e1c-ab92-6ce2afc7f926}" name="report_content_of_repository_request" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
-    <Input_Parameter name="repository_path" type="APP-MARKER-REPOSITORY-PATH" encoding="NATIVE"/>
+<Provided_Interface id="{dee9ccd3-963d-4363-8d23-97ee81f91eb1}" name="report_content_of_repository_request" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="repository_path" type="LITTLE-FS-REPOSITORY-PATH" encoding="NATIVE"/>
 </Provided_Interface>
 
-<Provided_Interface id="{54a8a6f8-13b2-46cb-83c3-aceeae3602fa}" name="init" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+<Provided_Interface id="{f1867ff8-049a-451b-b653-3fdf9caa12af}" name="init" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
     <Input_Parameter name="read_size" type="T-UInt32" encoding="NATIVE"/>
     <Input_Parameter name="prog_size" type="T-UInt32" encoding="NATIVE"/>
     <Input_Parameter name="block_size" type="T-UInt32" encoding="NATIVE"/>
     <Input_Parameter name="block_count" type="T-UInt32" encoding="NATIVE"/>
     <Input_Parameter name="block_cycles" type="T-UInt32" encoding="NATIVE"/>
-    <Input_Parameter name="cashe_size" type="T-UInt32" encoding="NATIVE"/>
+    <Input_Parameter name="cache_size" type="T-UInt32" encoding="NATIVE"/>
     <Input_Parameter name="lookahead_size" type="T-UInt32" encoding="NATIVE"/>
     <Output_Parameter name="result" type="T-Boolean" encoding="NATIVE"/>
 </Provided_Interface>
 
-<Required_Interface id="{09aa92a4-c575-4b55-b7a3-448aac9329b7}" name="memory_read" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+<Required_Interface id="{6f823eb5-5f82-4283-b30d-9d78cb9fb889}" name="memory_read" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
     <Input_Parameter name="block_index" type="MEMORY-BLOCK-INDEX" encoding="NATIVE"/>
     <Input_Parameter name="block_offset" type="MEMORY-OFFSET" encoding="NATIVE"/>
     <Output_Parameter name="buffer" type="MEMORY-DATA" encoding="NATIVE"/>
     <Input_Parameter name="data_size" type="MEMORY-SIZE" encoding="NATIVE"/>
     <Output_Parameter name="return_code" type="T-Int32" encoding="NATIVE"/>
     <Property name="Taste::InheritPI" value="true"/>
-    <Property name="Taste::Autonamed" value="true"/>
+    <Property name="Taste::Autonamed" value="false"/>
 </Required_Interface>
 
-<Required_Interface id="{b56b5223-f51d-4c71-a26b-2b9a7017deb2}" name="memory_program" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+<Required_Interface id="{140f4b61-a5f6-406b-9b3d-5ec6eaaa3a82}" name="memory_program" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
     <Input_Parameter name="block_index" type="MEMORY-BLOCK-INDEX" encoding="NATIVE"/>
     <Input_Parameter name="block_offset" type="MEMORY-OFFSET" encoding="NATIVE"/>
     <Input_Parameter name="buffer" type="MEMORY-DATA" encoding="NATIVE"/>
     <Input_Parameter name="data_size" type="MEMORY-SIZE" encoding="NATIVE"/>
     <Output_Parameter name="return_code" type="T-Int32" encoding="NATIVE"/>
     <Property name="Taste::InheritPI" value="true"/>
-    <Property name="Taste::Autonamed" value="true"/>
+    <Property name="Taste::Autonamed" value="false"/>
 </Required_Interface>
 
-<Required_Interface id="{99b8ed99-f8ae-471d-b27b-c0c756f85738}" name="memory_erase" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+<Required_Interface id="{f7c43748-c0c0-4417-bfb6-5841fd26e2d1}" name="memory_erase" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
     <Input_Parameter name="block_index" type="MEMORY-BLOCK-INDEX" encoding="NATIVE"/>
     <Output_Parameter name="return_code" type="T-Int32" encoding="NATIVE"/>
     <Property name="Taste::InheritPI" value="true"/>
-    <Property name="Taste::Autonamed" value="true"/>
+    <Property name="Taste::Autonamed" value="false"/>
 </Required_Interface>
 
-<Required_Interface id="{8bd2f193-7bee-4b50-80ff-a5a321b96b0d}" name="memory_sync" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+<Required_Interface id="{0d8c0f4f-2d54-41c1-9299-e2aa59560a5f}" name="memory_sync" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
     <Output_Parameter name="return_code" type="T-Int32" encoding="NATIVE"/>
     <Property name="Taste::InheritPI" value="true"/>
-    <Property name="Taste::Autonamed" value="true"/>
+    <Property name="Taste::Autonamed" value="false"/>
 </Required_Interface>
 
-<Required_Interface id="{0e5ded53-3d6d-427c-8e46-16b168fdb30e}" name="report_content_of_repository_request_respond" kind="Unprotected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" is_alarm="false" is_observable="false" wcet="0">
-    <Input_Parameter name="repository_path" type="APP-MARKER-REPOSITORY-PATH" encoding="NATIVE"/>
-    <Output_Parameter name="files" type="APP-MARKER-REPOSITORY-OBJECTS" encoding="NATIVE"/>
+<Required_Interface id="{f3f5a1d9-713b-46ee-9379-84604f7a3c2d}" name="report_content_of_repository_request_respond" kind="Unprotected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" is_alarm="false" wcet="0" is_observable="false">
+    <Input_Parameter name="repository_path" type="LITTLE-FS-REPOSITORY-PATH" encoding="NATIVE"/>
+    <Output_Parameter name="files" type="LITTLE-FS-REPOSITORY-OBJECTS" encoding="NATIVE"/>
     <Property name="Taste::InheritPI" value="true"/>
-    <Property name="Taste::Autonamed" value="true"/>
+    <Property name="Taste::Autonamed" value="false"/>
 </Required_Interface>
 
-    <Implementations>
-        <Implementation name="default" language="C"/>
-    </Implementations>
 </Function>
-<UI version="1.0" ><Entity id="{134a00cd-fade-4035-8488-3668f711174d}"><Taste coordinates="54000 10000 74000 42000">
+<UI version="1.0" ><Entity id="{3cab689b-7f4c-4904-bc99-a7c6d87728f4}"><Taste coordinates="54000 10000 74000 42000">
 </Taste>
-</Entity><Entity id="{d14bf9a4-c2c0-4c01-a9e0-23d6229283c8}"><Taste coordinates="54000 18000">
+</Entity><Entity id="{c6f01ffd-7945-43e7-8b65-1a373602b587}"><Taste coordinates="54000 18000">
 </Taste>
-</Entity><Entity id="{e6273eeb-50ab-432b-a0d0-c1da30ed203d}"><Taste coordinates="54000 22000">
+</Entity><Entity id="{247d83cc-78b0-4b87-9bb3-d94270a45018}"><Taste coordinates="54000 22000">
 </Taste>
-</Entity><Entity id="{2787b124-266d-43bc-89f4-e8d96ac1f500}"><Taste coordinates="54000 26000">
+</Entity><Entity id="{ffaa8fa2-2e50-4fa0-bea1-b5b74ef79c7f}"><Taste coordinates="54000 26000">
 </Taste>
-</Entity><Entity id="{12ab21b8-80ec-4e6b-bf39-02b8a9a70e94}"><Taste coordinates="54000 30000">
+</Entity><Entity id="{c79fb202-770f-4354-9a61-760067a79b02}"><Taste coordinates="54000 30000">
 </Taste>
-</Entity><Entity id="{9b53cebe-033a-4e1c-ab92-6ce2afc7f926}"><Taste coordinates="54000 34000">
+</Entity><Entity id="{dee9ccd3-963d-4363-8d23-97ee81f91eb1}"><Taste coordinates="54000 34000">
 </Taste>
-</Entity><Entity id="{54a8a6f8-13b2-46cb-83c3-aceeae3602fa}"><Taste coordinates="54000 12000">
+</Entity><Entity id="{f1867ff8-049a-451b-b653-3fdf9caa12af}"><Taste coordinates="54000 12000">
 </Taste>
-</Entity><Entity id="{09aa92a4-c575-4b55-b7a3-448aac9329b7}"><Taste coordinates="74000 21000">
+</Entity><Entity id="{6f823eb5-5f82-4283-b30d-9d78cb9fb889}"><Taste coordinates="74000 21000">
 </Taste>
-</Entity><Entity id="{b56b5223-f51d-4c71-a26b-2b9a7017deb2}"><Taste coordinates="74000 26000">
+</Entity><Entity id="{140f4b61-a5f6-406b-9b3d-5ec6eaaa3a82}"><Taste coordinates="74000 26000">
 </Taste>
-</Entity><Entity id="{99b8ed99-f8ae-471d-b27b-c0c756f85738}"><Taste coordinates="74000 31000">
+</Entity><Entity id="{f7c43748-c0c0-4417-bfb6-5841fd26e2d1}"><Taste coordinates="74000 31000">
 </Taste>
-</Entity><Entity id="{8bd2f193-7bee-4b50-80ff-a5a321b96b0d}"><Taste coordinates="74000 36000">
+</Entity><Entity id="{0d8c0f4f-2d54-41c1-9299-e2aa59560a5f}"><Taste coordinates="74000 36000">
 </Taste>
-</Entity><Entity id="{0e5ded53-3d6d-427c-8e46-16b168fdb30e}"><Taste coordinates="54000 39000">
+</Entity><Entity id="{f3f5a1d9-713b-46ee-9379-84604f7a3c2d}"><Taste coordinates="54000 39000">
 </Taste>
 </Entity>
 </UI>
+
 </InterfaceView>

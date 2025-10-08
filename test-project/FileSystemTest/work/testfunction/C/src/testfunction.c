@@ -14,13 +14,13 @@
 
 static void test_file_create()
 {
-	asn1SccGAMMA_REPOSITORY_PATH file_path;
+	asn1SccLITTLE_FS_REPOSITORY_PATH file_path;
 	strcpy(file_path.field_data, "test_re");
-	asn1SccGAMMA_MAXIMUM_SIZE maximum_size = 0;
-	asn1SccGAMMA_ADDITIONAL_FILE_ATTRIBUTE file_attr;
+	asn1SccLITTLE_FS_MAXIMUM_SIZE maximum_size = 0;
+	asn1SccLITTLE_FS_ADDITIONAL_FILE_ATTRIBUTE file_attr;
 	file_attr.field_data.nCount = 1;
 	file_attr.field_data.arr[0] = 0xab;
-	asn1SccGAMMA_BOOLEAN result;
+	asn1SccLITTLE_FS_BOOLEAN result;
 
 	testfunction_RI_file_handling_create_file(&file_path, &maximum_size,
 						  &file_attr, &result);
@@ -33,17 +33,17 @@ static void test_file_create()
 
 static void test_file_write()
 {
-	asn1SccGAMMA_REPOSITORY_PATH file_path;
+	asn1SccLITTLE_FS_REPOSITORY_PATH file_path;
 	strcpy(file_path.field_data, "test_re");
-	asn1SccGAMMA_MEMORY_OFFSET memory_offset = 8;
-	asn1SccGAMMA_MEMORY_DATA memory_data;
+	asn1SccLITTLE_FS_MEMORY_OFFSET memory_offset = 8;
+	asn1SccLITTLE_FS_MEMORY_DATA memory_data;
 	memory_data.field_data.nCount = 4;
 	memory_data.field_data.arr[0] = 0x12;
 	memory_data.field_data.arr[1] = 0x34;
 	memory_data.field_data.arr[2] = 0x56;
 	memory_data.field_data.arr[3] = 0x78;
 
-	asn1SccGAMMA_BOOLEAN result;
+	asn1SccLITTLE_FS_BOOLEAN result;
 
 	testfunction_RI_write_to_file(&file_path, &memory_offset,
 					    &memory_data, &result);
@@ -56,12 +56,12 @@ static void test_file_write()
 
 static void test_file_read()
 {
-	asn1SccGAMMA_REPOSITORY_PATH file_path;
+	asn1SccLITTLE_FS_REPOSITORY_PATH file_path;
 	strcpy(file_path.field_data, "test_re");
-	asn1SccGAMMA_MEMORY_OFFSET memory_offset = 8;
-	asn1SccGAMMA_MEMORY_OFFSET memory_size = 4;
-	asn1SccGAMMA_MEMORY_DATA out_memory_data;
-	asn1SccGAMMA_BOOLEAN result;
+	asn1SccLITTLE_FS_MEMORY_OFFSET memory_offset = 8;
+	asn1SccLITTLE_FS_MEMORY_OFFSET memory_size = 4;
+	asn1SccLITTLE_FS_MEMORY_DATA out_memory_data;
+	asn1SccLITTLE_FS_BOOLEAN result;
 
 	testfunction_RI_read_file(&file_path, &memory_offset,
 					   &memory_size, &out_memory_data,
@@ -79,7 +79,7 @@ static void test_file_read()
 
 static void test_report_content_of_repository()
 {
-	asn1SccGAMMA_REPOSITORY_PATH dir_path;
+	asn1SccLITTLE_FS_REPOSITORY_PATH dir_path;
 	strcpy(dir_path.field_data, "/");
 
 	testfunction_RI_report_content_of_repository_request(&dir_path);
@@ -87,9 +87,9 @@ static void test_report_content_of_repository()
 
 static void test_file_delete()
 {
-	asn1SccGAMMA_FILE_PATH file_path_to_delete;
+	asn1SccLITTLE_FS_FILE_PATH file_path_to_delete;
 	strcpy(file_path_to_delete.file_name.field_data, "test_re");
-	asn1SccGAMMA_BOOLEAN result;
+	asn1SccLITTLE_FS_BOOLEAN result;
 
 	testfunction_RI_file_handling_delete_file(&file_path_to_delete,
 						  &result);
@@ -104,16 +104,16 @@ void testfunction_startup(void) {}
 
 void testfunction_PI_trigger(void)
 {
-	const asn1SccGAMMA_INTEGER read_size = 16;
-	const asn1SccGAMMA_INTEGER prog_size = 16;
-	const asn1SccGAMMA_INTEGER block_size = 4096;
-	const asn1SccGAMMA_INTEGER block_count = 128;
-	const asn1SccGAMMA_INTEGER block_cycles = 500;
-	const asn1SccGAMMA_INTEGER cashe_size = 16;
-	const asn1SccGAMMA_INTEGER lookahead_size = 16;
-	asn1SccGAMMA_BOOLEAN result;
+	const asn1SccLITTLE_FS_INTEGER read_size = 16;
+	const asn1SccLITTLE_FS_INTEGER prog_size = 16;
+	const asn1SccLITTLE_FS_INTEGER block_size = 4096;
+	const asn1SccLITTLE_FS_INTEGER block_count = 128;
+	const asn1SccLITTLE_FS_INTEGER block_cycles = 500;
+	const asn1SccLITTLE_FS_INTEGER cache_size = 16;
+	const asn1SccLITTLE_FS_INTEGER lookahead_size = 16;
+	asn1SccLITTLE_FS_BOOLEAN result;
 
-	testfunction_RI_init(&read_size, &prog_size, &block_size, &block_count, &block_cycles, &cashe_size, &lookahead_size, &result);
+	testfunction_RI_init(&read_size, &prog_size, &block_size, &block_count, &block_cycles, &cache_size, &lookahead_size, &result);
 	if (!result) {
 		printf("TEST FAILURE!\n");
 		exit(EXIT_FAILURE);
@@ -130,21 +130,21 @@ void testfunction_PI_trigger(void)
 }
 
 void testfunction_PI_report_content_of_repository_request_respond(
-    const asn1SccGAMMA_REPOSITORY_PATH *IN_repository_path,
-    asn1SccGAMMA_REPOSITORY_OBJECTS *OUT_files)
+    const asn1SccLITTLE_FS_REPOSITORY_PATH *IN_repository_path,
+    asn1SccLITTLE_FS_REPOSITORY_OBJECTS *OUT_files)
 
 {
 	if (!(OUT_files->field_data.nCount == 3 &&
 	      OUT_files->field_data.arr[0].object_type ==
-		  asn1SccGAMMA_OBJECT_TYPE_directory &&
+		  asn1SccLITTLE_FS_OBJECT_TYPE_directory &&
 	      strcmp(OUT_files->field_data.arr[0].object_name.field_data,
 		     ".") == 0 &&
 	      OUT_files->field_data.arr[1].object_type ==
-		  asn1SccGAMMA_OBJECT_TYPE_directory &&
+		  asn1SccLITTLE_FS_OBJECT_TYPE_directory &&
 	      strcmp(OUT_files->field_data.arr[1].object_name.field_data,
 		     "..") == 0 &&
 	      OUT_files->field_data.arr[2].object_type ==
-		  asn1SccGAMMA_OBJECT_TYPE_file &&
+		  asn1SccLITTLE_FS_OBJECT_TYPE_file &&
 	      strcmp(OUT_files->field_data.arr[2].object_name.field_data,
 		     "test_re") == 0)) {
 		printf("TEST FAILURE!\n");
