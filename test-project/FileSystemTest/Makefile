@@ -45,6 +45,9 @@ coverage: work/glue_coverage
 	$(MAKE) -C work check_targets
 	$(MAKE) -C work
 
+# Basic test
+test: all run
+
 # To build and run the system type e.g. 'make debug run'
 run:
 	$(MAKE) -C work run
