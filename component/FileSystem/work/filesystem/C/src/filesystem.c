@@ -69,12 +69,12 @@ void filesystem_PI_init(const asn1SccT_UInt32 *IN_read_size,
 		return;
 	}
 
-	if (0 < lfs_format(&lfs, &cfg)) {
+    if (0 > lfs_format(&lfs, &cfg)) {
 		FS_PRINT("[FileSystem] format error\n");
 		*OUT_result = false;
 		return;
 	}
-	if (0 < lfs_mount(&lfs, &cfg)) {
+    if (0 > lfs_mount(&lfs, &cfg)) {
 		FS_PRINT("[FileSystem] mount error\n");
 		*OUT_result = false;
 		return;
