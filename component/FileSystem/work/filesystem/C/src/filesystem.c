@@ -105,6 +105,7 @@ void filesystem_PI_file_handling_create_file(
 	    lfs_file_opencfg(&lfs, &file, IN_object_path->field_data,
 			     LFS_O_RDWR | LFS_O_CREAT, &file_config);
 	if (return_code < 0) {
+        lfs_file_close(&lfs, &file);
 		*OUT_result = false;
 		return;
 	}
@@ -144,17 +145,20 @@ void filesystem_PI_read_file(
 	    &lfs, &file, IN_file_path->field_data,
 	    LFS_O_RDWR | LFS_O_CREAT, &file_config);
 	if (return_code < 0) {
+        lfs_file_close(&lfs, &file);
 		*OUT_result = false;
 		return;
 	}
 
 	if (offset != lfs_file_seek(&lfs, &file, offset, LFS_SEEK_SET)) {
+        lfs_file_close(&lfs, &file);
 		*OUT_result = false;
 		return;
 	}
 
 	if (length !=
 	    lfs_file_read(&lfs, &file, OUT_content->field_data.arr, length)) {
+        lfs_file_close(&lfs, &file);
 		*OUT_result = false;
 		return;
 	}
@@ -181,6 +185,7 @@ void filesystem_PI_report_content_of_repository_request(
 	int return_code =
 	    lfs_dir_open(&lfs, &dir, IN_repository_path->field_data);
 	if (return_code < 0) {
+        lfs_dir_close(&lfs, &dir);
 		FS_PRINT("[FileSystem] could not open a dir\n");
 		return;
 	}
@@ -236,17 +241,20 @@ void filesystem_PI_write_to_file(
 	    &lfs, &file, IN_file_path->field_data,
 	    LFS_O_RDWR | LFS_O_CREAT, &file_config);
 	if (return_code < 0) {
+        lfs_file_close(&lfs, &file);
 		*OUT_result = false;
 		return;
 	}
 
 	if (offset != lfs_file_seek(&lfs, &file, offset, LFS_SEEK_SET)) {
+        lfs_file_close(&lfs, &file);
 		*OUT_result = false;
 		return;
 	}
 
 	if (length !=
 	    lfs_file_write(&lfs, &file, IN_content->field_data.arr, length)) {
+        lfs_file_close(&lfs, &file);
 		*OUT_result = false;
 		return;
 	}
