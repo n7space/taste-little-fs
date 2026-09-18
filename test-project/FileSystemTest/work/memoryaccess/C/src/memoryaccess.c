@@ -12,11 +12,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MEMORY_SIZE (100 * 1024)
+#define BLOCK_SIZE 4096
+#define BLOCK_COUNT 128
+#define MEMORY_SIZE (BLOCK_SIZE * BLOCK_COUNT)
 #define READ_SIZE 16
 #define PROG_SIZE 16
-#define ERASE_SIZE 4096
-#define ERASE_COUNT 128
 
 static uint8_t memory[MEMORY_SIZE];
 
@@ -25,7 +25,7 @@ is_read_or_write_valid(const asn1SccMEMORY_BLOCK_INDEX *IN_block_index,
 		       const asn1SccMEMORY_OFFSET *IN_block_offset,
 		       const asn1SccMEMORY_SIZE *IN_data_size)
 {
-	if (*IN_block_index >= ERASE_COUNT) {
+    if (*IN_block_index >= BLOCK_COUNT) {
 		printf("[MEMORY ACCESS] block index is not smaller than "
 		       "ERASE_COUNT\n");
 		return false;
@@ -43,13 +43,13 @@ is_read_or_write_valid(const asn1SccMEMORY_BLOCK_INDEX *IN_block_index,
 		return false;
 	}
 
-	if (*IN_data_size + *IN_block_offset > ERASE_SIZE) {
+    if (*IN_data_size + *IN_block_offset > BLOCK_SIZE) {
 		printf("[MEMORY ACCESS] data size plus block offset is larger "
 		       "than ERASE_SIZE\n");
 		return false;
 	}
 
-	if (*IN_block_index * ERASE_SIZE + *IN_block_offset > MEMORY_SIZE) {
+    if (*IN_block_index * BLOCK_SIZE + *IN_block_offset > MEMORY_SIZE) {
 		printf("[MEMORY ACCESS] read or write access reaches beyond "
 		       "MEMORY_SIZE\n");
 		return false;
@@ -65,7 +65,9 @@ is_read_or_write_valid(const asn1SccMEMORY_BLOCK_INDEX *IN_block_index,
 	return true;
 }
 
-void memoryaccess_startup(void) { memset(memory, 0, MEMORY_SIZE); }
+void memoryaccess_startup(void) {
+    memset(memory, 0xff, MEMORY_SIZE);
+}
 
 void memoryaccess_PI_memory_read(
     const asn1SccMEMORY_BLOCK_INDEX *IN_block_index,
@@ -79,9 +81,10 @@ void memoryaccess_PI_memory_read(
 		return;
 	}
 
+
 	OUT_buffer->nCount = *IN_data_size;
 	memcpy(OUT_buffer->arr,
-	       &memory[*IN_block_index * ERASE_SIZE + *IN_block_offset],
+           &memory[*IN_block_index * BLOCK_SIZE + *IN_block_offset],
 	       *IN_data_size);
 	*OUT_return_code = 0;
 }
@@ -91,15 +94,13 @@ void memoryaccess_PI_memory_program(
     const asn1SccMEMORY_OFFSET *IN_block_offset,
     const asn1SccMEMORY_DATA *IN_buffer, const asn1SccMEMORY_SIZE *IN_data_size,
     asn1SccT_Int32 *OUT_return_code)
-
 {
 	if (!is_read_or_write_valid(IN_block_index, IN_block_offset,
 				    IN_data_size)) {
 		*OUT_return_code = -1;
 		return;
 	}
-
-	memcpy(&memory[*IN_block_index * ERASE_SIZE + *IN_block_offset],
+    memcpy(&memory[*IN_block_index * BLOCK_SIZE + *IN_block_offset],
 	       IN_buffer->arr, *IN_data_size);
 	*OUT_return_code = 0;
 }
@@ -109,7 +110,7 @@ void memoryaccess_PI_memory_erase(
     asn1SccT_Int32 *OUT_return_code)
 
 {
-	if (*IN_block_index >= ERASE_COUNT) {
+    if (*IN_block_index >= BLOCK_COUNT) {
 		printf("[MEMORY ACCESS] block index is not smaller than "
 		       "ERASE_COUNT");
 		*OUT_return_code = -1;
@@ -121,7 +122,6 @@ void memoryaccess_PI_memory_erase(
 }
 
 void memoryaccess_PI_memory_sync(asn1SccT_Int32 *OUT_return_code)
-
 {
 	// noop
 	*OUT_return_code = 0;

@@ -77,6 +77,21 @@ static void test_file_read()
 	}
 }
 
+static void test_get_file_size()
+{
+    asn1SccLITTLE_FS_REPOSITORY_PATH file_path;
+    strcpy(file_path.field_data, "test_re");
+    asn1SccLITTLE_FS_MEMORY_OFFSET size = 0;
+    asn1SccLITTLE_FS_BOOLEAN result = false;
+
+    testfunction_RI_get_file_size(&file_path, &size, &result);
+
+    if(!result || (size != 12)) { // write has offset 8 and size 4 in total, file has 12 bytes
+        printf("TEST FAILURE!\n");
+        exit(EXIT_FAILURE);
+    }
+}
+
 static void test_report_content_of_repository()
 {
 	asn1SccLITTLE_FS_REPOSITORY_PATH dir_path;
@@ -122,6 +137,7 @@ void testfunction_PI_trigger(void)
 	test_file_create();
 	test_file_write();
 	test_file_read();
+    test_get_file_size();
 	test_report_content_of_repository();
 	test_file_delete();
 
