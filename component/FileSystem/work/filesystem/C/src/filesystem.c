@@ -105,6 +105,7 @@ void filesystem_PI_file_handling_create_file(
 	    lfs_file_opencfg(&lfs, &file, IN_object_path->field_data,
 			     LFS_O_RDWR | LFS_O_CREAT, &file_config);
 	if (return_code < 0) {
+        lfs_file_close(&lfs, &file);
 		*OUT_result = false;
 		return;
 	}
@@ -121,6 +122,25 @@ void filesystem_PI_file_handling_delete_file(
 	int return_code =
 	    lfs_remove(&lfs, IN_object_path->file_name.field_data);
 	*OUT_result = return_code == 0;
+}
+
+void filesystem_PI_get_file_size(
+    const asn1SccLITTLE_FS_REPOSITORY_PATH *IN_file_path,
+    asn1SccLITTLE_FS_MEMORY_OFFSET *OUT_size,
+    asn1SccLITTLE_FS_BOOLEAN *OUT_result)
+{
+    struct lfs_info file_info;
+    int return_code = lfs_stat(&lfs, IN_file_path->field_data, &file_info);
+    if(return_code < 0) {
+        *OUT_result = false;
+        return;
+    }
+    if(file_info.type != LFS_TYPE_REG) {
+        *OUT_result = false;
+        return;
+    }
+    *OUT_size = file_info.size;
+    *OUT_result = true;
 }
 
 void filesystem_PI_read_file(
@@ -144,17 +164,20 @@ void filesystem_PI_read_file(
 	    &lfs, &file, IN_file_path->field_data,
 	    LFS_O_RDWR | LFS_O_CREAT, &file_config);
 	if (return_code < 0) {
+        lfs_file_close(&lfs, &file);
 		*OUT_result = false;
 		return;
 	}
 
 	if (offset != lfs_file_seek(&lfs, &file, offset, LFS_SEEK_SET)) {
+        lfs_file_close(&lfs, &file);
 		*OUT_result = false;
 		return;
 	}
 
 	if (length !=
 	    lfs_file_read(&lfs, &file, OUT_content->field_data.arr, length)) {
+        lfs_file_close(&lfs, &file);
 		*OUT_result = false;
 		return;
 	}
@@ -181,6 +204,7 @@ void filesystem_PI_report_content_of_repository_request(
 	int return_code =
 	    lfs_dir_open(&lfs, &dir, IN_repository_path->field_data);
 	if (return_code < 0) {
+        lfs_dir_close(&lfs, &dir);
 		FS_PRINT("[FileSystem] could not open a dir\n");
 		return;
 	}
@@ -236,17 +260,20 @@ void filesystem_PI_write_to_file(
 	    &lfs, &file, IN_file_path->field_data,
 	    LFS_O_RDWR | LFS_O_CREAT, &file_config);
 	if (return_code < 0) {
+        lfs_file_close(&lfs, &file);
 		*OUT_result = false;
 		return;
 	}
 
 	if (offset != lfs_file_seek(&lfs, &file, offset, LFS_SEEK_SET)) {
+        lfs_file_close(&lfs, &file);
 		*OUT_result = false;
 		return;
 	}
 
 	if (length !=
 	    lfs_file_write(&lfs, &file, IN_content->field_data.arr, length)) {
+        lfs_file_close(&lfs, &file);
 		*OUT_result = false;
 		return;
 	}

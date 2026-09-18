@@ -4,6 +4,8 @@ CONFIG += generateC
 
 DISTFILES +=  \
     $(HOME)/tool-inst/share/taste-types/taste-types.asn \
+    $(HOME)/tool-inst/share/taste-types/taste-types.asn \
+    $(HOME)/tool-inst/share/taste-types/taste-types.asn \
     FileSystemTest.acn \
     FileSystemTest.asn \
     LittleFS.acn \
