@@ -124,6 +124,25 @@ void filesystem_PI_file_handling_delete_file(
 	*OUT_result = return_code == 0;
 }
 
+void filesystem_PI_get_file_size(
+    const asn1SccLITTLE_FS_REPOSITORY_PATH *IN_file_path,
+    asn1SccLITTLE_FS_MEMORY_OFFSET *OUT_size,
+    asn1SccLITTLE_FS_BOOLEAN *OUT_result)
+{
+    struct lfs_info file_info;
+    int return_code = lfs_stat(&lfs, IN_file_path->field_data, &file_info);
+    if(return_code < 0) {
+        *OUT_result = false;
+        return;
+    }
+    if(file_info.type != LFS_TYPE_REG) {
+        *OUT_result = false;
+        return;
+    }
+    *OUT_size = file_info.size;
+    *OUT_result = true;
+}
+
 void filesystem_PI_read_file(
     const asn1SccLITTLE_FS_REPOSITORY_PATH *IN_file_path,
     const asn1SccLITTLE_FS_MEMORY_OFFSET *IN_offset,
