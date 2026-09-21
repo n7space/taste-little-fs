@@ -1,4 +1,4 @@
-<InterfaceView version="1.2">
+<InterfaceView version="1.3" asn1file="LittleFS.acn" UiFile="interfaceview.ui.xml" modifierHash="9499a10">
 <Function id="{3cab689b-7f4c-4904-bc99-a7c6d87728f4}" name="FileSystem" is_type="NO" language="C" default_implementation="default" fixed_system_element="NO" required_system_element="NO" instances_min="1" instances_max="1" startup_priority="2">
     <Property name="TASTE_IV_Properties::Default_Codegen" value="Ada"/>
 <Provided_Interface id="{c6f01ffd-7945-43e7-8b65-1a373602b587}" name="file_handling_create_file" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
@@ -43,6 +43,12 @@
     <Output_Parameter name="result" type="T-Boolean" encoding="NATIVE"/>
 </Provided_Interface>
 
+<Provided_Interface id="{52e6733c-9dd4-4188-b7f9-8f0b0917d791}" name="get_file_size" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
+    <Input_Parameter name="file_path" type="LITTLE-FS-REPOSITORY-PATH" encoding="NATIVE"/>
+    <Output_Parameter name="size" type="LITTLE-FS-MEMORY-OFFSET" encoding="NATIVE"/>
+    <Output_Parameter name="result" type="LITTLE-FS-BOOLEAN" encoding="NATIVE"/>
+</Provided_Interface>
+
 <Required_Interface id="{6f823eb5-5f82-4283-b30d-9d78cb9fb889}" name="memory_read" kind="Protected" enable_multicast="true" layer="default" required_system_element="NO" is_simulink_interface="false" wcet="0">
     <Input_Parameter name="block_index" type="MEMORY-BLOCK-INDEX" encoding="NATIVE"/>
     <Input_Parameter name="block_offset" type="MEMORY-OFFSET" encoding="NATIVE"/>
@@ -83,32 +89,11 @@
     <Property name="Taste::Autonamed" value="false"/>
 </Required_Interface>
 
+    <Implementations>
+        <Implementation name="default" language="C"/>
+    </Implementations>
 </Function>
-<UI version="1.0" ><Entity id="{3cab689b-7f4c-4904-bc99-a7c6d87728f4}"><Taste coordinates="54000 10000 74000 42000">
-</Taste>
-</Entity><Entity id="{c6f01ffd-7945-43e7-8b65-1a373602b587}"><Taste coordinates="54000 18000">
-</Taste>
-</Entity><Entity id="{247d83cc-78b0-4b87-9bb3-d94270a45018}"><Taste coordinates="54000 22000">
-</Taste>
-</Entity><Entity id="{ffaa8fa2-2e50-4fa0-bea1-b5b74ef79c7f}"><Taste coordinates="54000 26000">
-</Taste>
-</Entity><Entity id="{c79fb202-770f-4354-9a61-760067a79b02}"><Taste coordinates="54000 30000">
-</Taste>
-</Entity><Entity id="{dee9ccd3-963d-4363-8d23-97ee81f91eb1}"><Taste coordinates="54000 34000">
-</Taste>
-</Entity><Entity id="{f1867ff8-049a-451b-b653-3fdf9caa12af}"><Taste coordinates="54000 12000">
-</Taste>
-</Entity><Entity id="{6f823eb5-5f82-4283-b30d-9d78cb9fb889}"><Taste coordinates="74000 21000">
-</Taste>
-</Entity><Entity id="{140f4b61-a5f6-406b-9b3d-5ec6eaaa3a82}"><Taste coordinates="74000 26000">
-</Taste>
-</Entity><Entity id="{f7c43748-c0c0-4417-bfb6-5841fd26e2d1}"><Taste coordinates="74000 31000">
-</Taste>
-</Entity><Entity id="{0d8c0f4f-2d54-41c1-9299-e2aa59560a5f}"><Taste coordinates="74000 36000">
-</Taste>
-</Entity><Entity id="{f3f5a1d9-713b-46ee-9379-84604f7a3c2d}"><Taste coordinates="54000 39000">
-</Taste>
-</Entity>
-</UI>
+
+<Layer name="default" is_visible="true"/>
 
 </InterfaceView>
